@@ -10,7 +10,7 @@
 
 | No. | 企画テーマ | ファイル | 概要 |
 | :--- | :--- | :--- | :--- |
-| **Pattern 1** | **富士急ハイランド** 🎢 | [pattern1.html](./pattern1.html) | 絶叫マシンとお化け屋敷を攻略するツアー。<br>和風ホラー×サイバーパンクなデザイン。 |
+| **Pattern 1** | **富士急ハイランド** 🎢 | [pattern1.html](https://hicloud-co-jp.github.io/Year-end-party_2025/pattern1.html) | 絶叫マシンとお化け屋敷を攻略するツアー。<br>和風ホラー×サイバーパンクなデザイン。 |
 | **Pattern 2** | **サバイバルゲーム** 🔫 | [pattern2.html](./pattern2.html) | 全員初心者のサバイバルゲーム体験。<br>軍事作戦指令書（タクティカル）風デザイン。 |
 | **Pattern 3** | **格ゲー最強決定戦** 🥊 | [pattern3.html](./pattern3.html) | 懐かしのタイトルで競うゲーム大会。<br>90年代アーケード筐体風デザイン。 |
 | **Pattern 4** | **スポッチャ GRAND PRIX** ⚾ | [pattern4.html](./pattern4.html) | ラウンドワン・スポッチャでのスポーツ対決。<br>深夜のスポーツバラエティ番組風デザイン。 |
