@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>悪鬼夜行 2025 - OPERATION: SURVIVAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'military-green': '#4ade80',
+                        'military-dark': '#050a05',
+                        'alert-red': '#ef4444',
+                    },
+                    fontFamily: {
+                        'military': ['"Black Ops One"', 'cursive'],
+                        'tech': ['"Share Tech Mono"', 'monospace'],
+                        'jp': ['"Zen Kaku Gothic New"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050a05;
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+        /* CRT Monitor Effect */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(74, 222, 128, 0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100%; }
+        }
+        .bg-grid {
+            background-image: linear-gradient(rgba(74, 222, 128, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(74, 222, 128, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        /* Typing Animation */
+        .typing-effect {
+            overflow: hidden;
+            border-right: 2px solid #4ade80;
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+            width: 0; 
+            animation-fill-mode: forwards;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #4ade80; }
+        }
+
+        /* Tactical Borders */
+        .tactical-box {
+            position: relative;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            background: rgba(0, 20, 0, 0.6);
+        }
+        .tactical-box::before, .tactical-box::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid #4ade80;
+            transition: all 0.3s;
+        }
+        .tactical-box::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+        .tactical-box::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+        
+        .tactical-box:hover::before, .tactical-box:hover::after {
+            width: 20px;
+            height: 20px;
+        }
+
+        .sight-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+        }
+        .sight-cross::before, .sight-cross::after {
+            content: '';
+            position: absolute;
+            background: rgba(239, 68, 68, 0.5);
+        }
+        .sight-cross::before { top: 9px; left: 0; width: 20px; height: 2px; }
+        .sight-cross::after { top: 0; left: 9px; width: 2px; height: 20px; }
+
+    </style>
+</head>
+<body class="bg-grid font-jp selection:bg-military-green selection:text-black pb-20">
+
+    <!-- Scanline Effect Overlay -->
+    <div class="fixed inset-0 pointer-events-none z-50 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABBAEAHnOcQAAAAABJRU5ErkJggg==')] opacity-[0.02]"></div>
+    <div class="scanline fixed top-0 left-0 right-0 pointer-events-none z-40"></div>
+
+    <!-- Header / Top Data -->
+    <header class="fixed top-0 w-full bg-military-dark/90 border-b border-military-green/30 z-30 backdrop-blur-sm">
+        <div class="flex justify-between items-center px-4 py-2 text-xs font-tech text-military-green">
+            <span>SYS.STATUS: ONLINE</span>
+            <span class="animate-pulse">/// ENCRYPTED CONNECTION ///</span>
+            <span>BAT: 100%</span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-12 px-4">
+        <div class="max-w-4xl mx-auto text-center relative">
+            <!-- Target Scope Deco -->
+            <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-military-green opacity-50"></div>
+            <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-military-green opacity-50"></div>
+
+            <p class="text-military-green font-tech tracking-[0.3em] mb-2 text-sm">MISSION: YEAR END PARTY 2025</p>
+            
+            <h1 class="text-5xl md:text-7xl font-military text-white mb-4 tracking-tighter uppercase" style="text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);">
+                悪鬼夜行
+            </h1>
+            
+            <div class="inline-block bg-military-green text-black font-bold px-6 py-1 transform -skew-x-12 mb-8">
+                <span class="inline-block transform skew-x-12 font-tech text-lg">OPERATION: SURVIVAL</span>
+            </div>
+
+            <!-- Main Image -->
+            <div class="relative rounded-lg overflow-hidden border-2 border-gray-800 group">
+                <div class="absolute inset-0 bg-military-green/20 z-10 mix-blend-overlay"></div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnuRDD2avuPbkCBhQm8gFV8pU-MkA46KN5VA&s" alt="Soldier" class="w-full h-64 md:h-96 object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                
+                <!-- HUD Overlay on Image -->
+                <div class="absolute bottom-4 left-4 z-20 text-left">
+                    <p class="font-tech text-xs text-military-green bg-black/70 px-2 py-1">LOC: TARGET AREA ALPHA</p>
+                    <p class="font-tech text-xs text-military-green bg-black/70 px-2 py-1 mt-1">UNIT: BEGINNER SQUAD</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Briefing -->
+    <section class="max-w-3xl mx-auto px-4 py-12">
+        <div class="flex items-center mb-6">
+            <span class="text-military-green text-2xl mr-2">▶</span>
+            <h2 class="text-2xl font-military text-white tracking-widest border-b border-gray-700 w-full pb-2">MISSION BRIEFING <span class="text-xs font-tech text-gray-500 ml-2">作戦概要</span></h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="space-y-4 text-gray-300 leading-relaxed text-sm md:text-base">
+                <div class="tactical-box p-4 rounded">
+                    <h3 class="text-military-green font-bold mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        大人の戦争ごっこ
+                    </h3>
+                    <p>エアソフトガンを使用し、フィールド内で撃ち合うエキサイティングなスポーツ。それがサバイバルゲーム、通称「サバゲー」だ。</p>
+                </div>
+                
+                <div class="tactical-box p-4 rounded">
+                    <h3 class="text-alert-red font-bold mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-8a2 2 0 012-2h14a2 2 0 012 2v8M3 10V5a2 2 0 012-2h3l2-3h6l2 3h3a2 2 0 012 2v5"></path></svg>
+                        ルールは単純明快
+                    </h3>
+                    <p>2チームに分かれて敵の旗（フラグ）を奪い合う「陣取りゲーム」が基本。敵味方入り乱れての撃ち合いを制圧せよ。</p>
+                </div>
+            </div>
+
+            <div class="relative tactical-box p-1">
+                 <img src="https://www.hyperdouraku.com/survivalgame/images/title.jpg" alt="Briefing" class="w-full h-auto object-cover opacity-80">
+                 <div class="absolute inset-0 bg-grid pointer-events-none"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intel / Merits -->
+    <section class="bg-military-green/5 py-16 border-y border-military-green/20">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-center text-3xl font-military text-white mb-12">TACTICAL INTEL <span class="block text-sm font-tech text-military-green mt-1">作戦に有利な情報を開示する</span></h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Intel 1 -->
+                <div class="bg-black/50 border border-gray-700 p-6 rounded hover:border-military-green transition-colors group relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-6xl font-military text-gray-800 group-hover:text-military-green/20 transition-colors">01</div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-3 group-hover:text-military-green">EQUIPMENT</h3>
+                        <p class="text-gray-400 text-sm">
+                            <span class="text-military-green font-bold">手ぶらで参戦可能。</span><br>
+                            銃、迷彩服、ゴーグルなどの安全装備は全て現地でレンタル可能。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Intel 2 -->
+                <div class="bg-black/50 border border-gray-700 p-6 rounded hover:border-military-green transition-colors group relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-6xl font-military text-gray-800 group-hover:text-military-green/20 transition-colors">02</div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-3 group-hover:text-military-green">SKILL LEVEL</h3>
+                        <p class="text-gray-400 text-sm">
+                            <span class="text-military-green font-bold">全員、新兵（ルーキー）。</span><br>
+                            経験者は皆無。全員が同じスタートラインに立つため、実力差なしで楽しめる。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Intel 3 -->
+                <div class="bg-black/50 border border-gray-700 p-6 rounded hover:border-military-green transition-colors group relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-6xl font-military text-gray-800 group-hover:text-military-green/20 transition-colors">03</div>
+                    <div class="relative z-10">
+                        <h3 class="text-xl font-bold text-white mb-3 group-hover:text-military-green">FIELD</h3>
+                        <p class="text-gray-400 text-sm">
+                            <span class="text-military-green font-bold">非日常の戦場。</span><br>
+                            屋内または屋外の専用フィールドを利用。映画の主人公になった気分を味わえる。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules / Combat -->
+    <section class="max-w-4xl mx-auto px-4 py-16">
+        <div class="bg-gray-900 rounded-lg overflow-hidden flex flex-col md:flex-row border border-gray-700">
+            <div class="md:w-1/2 relative">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7LMlFwv-OMBsm77cA4WLelFfnUumTHV4Y1w&s" alt="Combat" class="w-full h-full object-cover filter sepia-[.5] contrast-125">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-20 h-20 border-2 border-white/30 rounded-full flex items-center justify-center animate-ping"></div>
+                    <div class="absolute sight-cross"></div>
+                </div>
+            </div>
+            <div class="md:w-1/2 p-8">
+                <h3 class="text-2xl font-bold text-alert-red mb-4 font-military">WARNING: RULES</h3>
+                <ul class="space-y-4 font-tech text-sm">
+                    <li class="flex items-start">
+                        <span class="text-military-green mr-2">>></span>
+                        <div>
+                            <strong class="text-white block">名誉ある自己申告（ヒットコール）</strong>
+                            弾が当たったら、自ら「ヒット！」と叫び、手を挙げてアピールせよ。これは紳士・淑女のスポーツである。
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-military-green mr-2">>></span>
+                        <div>
+                            <strong class="text-white block">セフティへの退避</strong>
+                            被弾後は速やかに戦線を離脱し、「セフティゾーン」へ帰還せよ。そこは安全地帯だ。
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-military-green mr-2">>></span>
+                        <div>
+                            <strong class="text-white block">安全第一</strong>
+                            ゴーグルは絶対着用。至近距離での射撃には配慮を。
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Join Button -->
+    <div class="text-center pb-16 px-4">
+        <p class="font-tech text-military-green mb-4 animate-pulse">RECRUITING NOW...</p>
+        <button class="bg-military-green text-black font-black text-xl px-12 py-4 rounded clip-path-polygon hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(74,222,128,0.6)]">
+            作戦に参加表明する
+        </button>
+        <p class="text-xs text-gray-500 mt-4 font-tech">CLICK TO CONFIRM DEPLOYMENT</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-black py-6 text-center font-tech text-xs text-gray-600">
+        <p>AKKI YAKO 2025 PROJECT : CLASSIFIED</p>
+        <p class="mt-1">DESIGNED FOR TACTICAL OPERATIONS</p>
+    </footer>
+
+</body>
+</html>
