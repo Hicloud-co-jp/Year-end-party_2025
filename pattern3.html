@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>悪鬼夜行 2025 - FIGHTING GAME TOURNAMENT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Press+Start+2P&family=Rampart+One&family=Reggae+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: 'Reggae One', cursive; /* 勢いのある日本語フォント */
+            overflow-x: hidden;
+        }
+        .font-arcade {
+            font-family: 'Press Start 2P', cursive; /* ドット絵風英語フォント */
+        }
+        .font-impact {
+            font-family: 'Black Han Sans', sans-serif;
+        }
+        
+        /* CRT Monitor Effect (走査線) */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        
+        /* Text Flicker Animation */
+        .blink-text {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Neon Glow */
+        .neon-text-blue {
+            text-shadow: 0 0 5px #00f, 0 0 10px #00f, 0 0 20px #0ff;
+        }
+        .neon-text-red {
+            text-shadow: 0 0 5px #f00, 0 0 10px #f00, 0 0 20px #f0f;
+        }
+
+        /* Game Select Card Hover Effect */
+        .game-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 4px solid #333;
+        }
+        .game-card:hover {
+            transform: scale(1.05);
+            border-color: #fbbf24; /* Amber-400 */
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+            z-index: 10;
+        }
+        
+        /* VS Screen Diagonal Split */
+        .vs-split {
+            background: linear-gradient(135deg, #1a202c 45%, #ef4444 45%, #ef4444 55%, #1a202c 55%);
+        }
+        @media (max-width: 768px) {
+             .vs-split {
+                background: linear-gradient(180deg, #1a202c 45%, #ef4444 45%, #ef4444 55%, #1a202c 55%);
+            }
+        }
+
+        /* Rainbow Text for Hyper Combo */
+        .rainbow-text {
+            background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 2s linear infinite;
+        }
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+    </style>
+</head>
+<body class="crt pb-20">
+
+    <!-- Insert Coin Header -->
+    <header class="bg-black p-4 text-center border-b-4 border-red-600 sticky top-0 z-40 shadow-lg">
+        <div class="flex justify-between items-center max-w-6xl mx-auto">
+            <div class="text-yellow-400 font-arcade text-xs md:text-sm">CREDIT 00</div>
+            <h1 class="text-2xl md:text-3xl font-bold text-white italic transform -skew-x-12 neon-text-red tracking-widest">
+                悪鬼夜行 <span class="text-sm not-italic text-white/80">2025</span>
+            </h1>
+            <div class="text-red-500 font-arcade text-xs md:text-sm blink-text">FREE PLAY</div>
+        </div>
+    </header>
+
+    <!-- Main Visual -->
+    <section class="relative h-[60vh] flex items-center justify-center overflow-hidden bg-gray-900">
+        <!-- Background Glitch/Noise Image (Overlay) -->
+        <div class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]"></div>
+        
+        <div class="text-center z-10 px-4">
+            <p class="text-blue-400 font-arcade mb-4 text-sm md:text-base neon-text-blue">HERE COMES A NEW CHALLENGER!</p>
+            <h2 class="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] transform skew-x-[-10deg] mb-6" style="text-shadow: 4px 4px 0px #b91c1c;">
+                最強<br>決定戦
+            </h2>
+            <div class="bg-black/80 border-2 border-white inline-block px-8 py-4 transform skew-x-[-10deg]">
+                <p class="text-xl md:text-2xl text-white font-bold transform skew-x-[10deg]">2025年 忘年会特別興行</p>
+            </div>
+            <p class="mt-8 text-gray-400 text-sm font-arcade">PUSH START BUTTON</p>
+        </div>
+        
+        <!-- Deco Lines -->
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-black to-transparent"></div>
+    </section>
+
+    <!-- Select Your Game (Title List) -->
+    <section class="max-w-6xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl md:text-5xl font-impact text-white mb-2 uppercase tracking-tighter italic">Select Your Title</h3>
+            <p class="text-yellow-500 font-arcade text-xs">CHOOSE YOUR BATTLEFIELD</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2">
+            
+            <!-- GUILTY GEAR X -->
+            <div class="game-card bg-gray-800 relative group overflow-hidden cursor-pointer">
+                <div class="aspect-video overflow-hidden">
+                    <img src="https://mediaworld.co.jp/cdn/shop/products/cg10360563.jpg?v=1631272078&width=1000" alt="GGX" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="p-4 bg-gradient-to-t from-black to-gray-900 relative">
+                    <div class="absolute -top-6 right-2 bg-red-600 text-white text-xs px-2 py-1 font-arcade transform rotate-3">HEAVEN OR HELL</div>
+                    <h4 class="text-xl font-bold text-white mb-1 truncate">GUILTY GEAR X</h4>
+                    <p class="text-xs text-gray-400">ハイスピード2D対戦アクションの金字塔。ロマンキャンセルで奇跡を起こせ。</p>
+                </div>
+            </div>
+
+            <!-- BLAZBLUE -->
+            <div class="game-card bg-gray-800 relative group overflow-hidden cursor-pointer">
+                <div class="aspect-video overflow-hidden">
+                    <img src="https://www.4gamer.net/games/127/G012709/screenshot_3.jpg" alt="BLAZBLUE" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="p-4 bg-gradient-to-t from-black to-gray-900 relative">
+                    <div class="absolute -top-6 right-2 bg-blue-600 text-white text-xs px-2 py-1 font-arcade transform -rotate-2">WHEEL OF FATE</div>
+                    <h4 class="text-xl font-bold text-white mb-1 truncate">BLAZBLUE CS II</h4>
+                    <p class="text-xs text-gray-400">蒼の物語は終わらない。ドライブ能力を駆使した戦略的コンボを決めろ。</p>
+                </div>
+            </div>
+
+            <!-- TEKKEN 5 -->
+            <div class="game-card bg-gray-800 relative group overflow-hidden cursor-pointer">
+                <div class="aspect-video overflow-hidden">
+                    <img src="https://game.watch.impress.co.jp/docs/20050331/tk501.jpg" alt="TEKKEN 5" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="p-4 bg-gradient-to-t from-black to-gray-900 relative">
+                    <div class="absolute -top-6 right-2 bg-yellow-600 text-white text-xs px-2 py-1 font-arcade transform rotate-1">GET READY</div>
+                    <h4 class="text-xl font-bold text-white mb-1 truncate">鉄拳5</h4>
+                    <p class="text-xs text-gray-400">3D格闘の完成形。空中コンボと壁コンボで相手を封殺せよ。</p>
+                </div>
+            </div>
+
+            <!-- KOF 98 -->
+            <div class="game-card bg-gray-800 relative group overflow-hidden cursor-pointer">
+                <div class="aspect-video overflow-hidden">
+                    <img src="https://game.snk-corp.co.jp/event/virtual-console/kof98/images/ss00_j.gif" alt="KOF 98" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="p-4 bg-gradient-to-t from-black to-gray-900 relative">
+                    <div class="absolute -top-6 right-2 bg-green-600 text-white text-xs px-2 py-1 font-arcade transform -rotate-3">DREAM MATCH</div>
+                    <h4 class="text-xl font-bold text-white mb-1 truncate">KOF '98</h4>
+                    <p class="text-xs text-gray-400">SNK格闘ゲームの最高傑作。3on3のチームバトルで友情を破壊しろ。</p>
+                </div>
+            </div>
+
+            <!-- Paca Paca Passion -->
+            <div class="game-card bg-gray-800 relative group overflow-hidden cursor-pointer md:col-span-2 lg:col-span-1 border-pink-500/50">
+                <div class="aspect-video overflow-hidden relative">
+                    <div class="absolute inset-0 bg-pink-500/20 z-10 mix-blend-overlay"></div>
+                    <img src="https://www.inside-games.jp/imgs/zoom/191372.jpg" alt="Paca Paca" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                </div>
+                <div class="p-4 bg-gradient-to-t from-black to-gray-900 relative">
+                    <div class="absolute -top-6 right-2 bg-pink-500 text-white text-xs px-2 py-1 font-arcade transform rotate-6 animate-pulse">RHYTHM BATTLE</div>
+                    <h4 class="text-xl font-bold text-pink-400 mb-1 truncate">パカパカパッション 1,2,SP</h4>
+                    <p class="text-xs text-gray-400">異色のリズム対戦枠。正確なビートとコマンド入力で相手の心を折れ。</p>
+                </div>
+            </div>
+
+            <!-- Mystery / Random -->
+            <div class="game-card bg-black relative group overflow-hidden cursor-pointer border-dashed border-gray-600 flex flex-col items-center justify-center text-center min-h-[200px]">
+                <div class="text-6xl font-arcade text-gray-700 group-hover:text-white mb-2">?</div>
+                <p class="text-gray-500 text-sm font-arcade group-hover:text-yellow-400">RANDOM SELECT</p>
+                <p class="text-xs text-gray-600 mt-2">当日サプライズ枠あり？</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Tournament Rules (VS Style) -->
+    <section class="py-16 px-4 bg-gray-900 overflow-hidden relative">
+        <!-- Background Deco -->
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-white to-red-500"></div>
+        <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-white to-blue-500"></div>
+
+        <h3 class="text-center text-4xl font-black text-white italic mb-12 neon-text-blue uppercase transform skew-x-[-10deg]">Tournament Regulation</h3>
+
+        <div class="max-w-5xl mx-auto bg-black border-4 border-white p-1 relative shadow-[10px_10px_0px_rgba(50,50,50,1)]">
+            <div class="border-2 border-white p-6 md:p-10">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b-2 border-gray-700 pb-4">
+                    <div>
+                        <span class="bg-red-600 text-white px-2 py-1 font-bold text-sm">MODE</span>
+                        <h4 class="text-2xl font-bold mt-2">総当たりリーグ戦 & トーナメント</h4>
+                    </div>
+                    <div class="mt-4 md:mt-0 text-right">
+                        <span class="bg-blue-600 text-white px-2 py-1 font-bold text-sm">TIME</span>
+                        <h4 class="text-2xl font-bold mt-2">99 SECONDS / 2 ROUNDS</h4>
+                    </div>
+                </div>
+
+                <ul class="space-y-6 text-lg">
+                    <li class="flex items-start">
+                        <span class="text-yellow-500 font-arcade mr-4 mt-1">01.</span>
+                        <div>
+                            <strong class="block text-xl mb-1">使用コントローラー自由</strong>
+                            <p class="text-sm text-gray-400">アケコン、パッド、ヒットボックス持ち込み可。ただしマクロ機能は禁止とする。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-yellow-500 font-arcade mr-4 mt-1">02.</span>
+                        <div>
+                            <strong class="block text-xl mb-1">敗者キャラクター変更可</strong>
+                            <p class="text-sm text-gray-400">勝者はキャラクター固定。負けた側のみキャラクターおよびハンディキャップの変更を認める。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-yellow-500 font-arcade mr-4 mt-1">03.</span>
+                        <div>
+                            <strong class="block text-xl mb-1 rainbow-text">煽り・死体蹴り推奨！？</strong>
+                            <p class="text-sm text-gray-400">仲間内の無礼講。ただしリアルファイトに発展しない範囲で、精神的ダメージを与え合おう。</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="mt-10 text-center">
+                    <p class="text-sm text-gray-500 mb-2 font-arcade">WINNER TAKES ALL</p>
+                    <div class="inline-block bg-yellow-400 text-black font-black text-2xl px-8 py-2 transform skew-x-[-15deg] cursor-pointer hover:bg-white hover:scale-110 transition-all">
+                        <span class="block transform skew-x-[15deg]">CHALLENGE ACCEPTED</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Credit) -->
+    <footer class="bg-black py-8 text-center border-t-2 border-gray-800">
+        <div class="mb-4">
+            <span class="inline-block w-3 h-3 bg-red-500 rounded-full animate-ping mx-1"></span>
+            <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-ping mx-1 delay-75"></span>
+            <span class="inline-block w-3 h-3 bg-blue-500 rounded-full animate-ping mx-1 delay-150"></span>
+        </div>
+        <p class="text-gray-500 font-arcade text-xs">PRODUCED BY AKKI YAKO 2025 COMMITTEE</p>
+        <p class="text-gray-700 font-arcade text-[10px] mt-2">ALL RIGHTS RESERVED TO ORIGINAL CREATORS</p>
+    </footer>
+
+</body>
+</html>
