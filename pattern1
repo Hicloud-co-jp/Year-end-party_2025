@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>悪鬼夜行 2025 忘年会 - 富士急ハイランド攻略戦</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaisei+Tokumin:wght@400;700;800&family=Nosifer&family=Yuji+Syuku&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kaisei Tokumin', serif;
+            background-color: #0a0a0a;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .font-horror {
+            font-family: 'Nosifer', cursive;
+        }
+        .font-brush {
+            font-family: 'Yuji Syuku', serif;
+        }
+        .neon-text {
+            text-shadow: 0 0 10px #ef4444, 0 0 20px #b91c1c;
+        }
+        .neon-box {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+        .bg-pattern {
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .glitch-effect:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #ef4444;
+        }
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen relative pb-20">
+
+    <!-- 装飾背景 -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-20">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-900 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900 blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- Header / Hero -->
+    <header class="relative z-10 pt-20 pb-16 px-4 text-center overflow-hidden">
+        <p class="text-red-500 tracking-[0.5em] text-sm mb-4 animate-pulse">YEAR END PARTY PROJECT</p>
+        <h1 class="text-6xl md:text-8xl font-brush mb-2 neon-text leading-tight">
+            悪鬼<br>夜行
+        </h1>
+        <div class="text-4xl md:text-6xl font-horror text-white opacity-80 mb-6 tracking-widest">2025</div>
+        
+        <div class="inline-block border-y-2 border-red-600 py-2 px-8 bg-black/50 backdrop-blur-sm">
+            <p class="text-xl md:text-2xl font-bold tracking-widest">富士急ハイランド<br>攻略作戦</p>
+        </div>
+        
+        <div class="mt-12 animate-bounce">
+            <p class="text-gray-400 text-sm">SCROLL TO ENTER</p>
+            <div class="text-red-500 text-2xl">▼</div>
+        </div>
+    </header>
+
+    <!-- Intro -->
+    <section class="relative z-10 max-w-2xl mx-auto px-6 py-12 text-center">
+        <p class="text-lg leading-loose text-gray-300 font-medium">
+            集え、命知らずの猛者たちよ。<br>
+            2025年の締めくくりは、<br>
+            <span class="text-red-500 font-bold text-xl">絶叫</span>と<span class="text-purple-500 font-bold text-xl">戦慄</span>の宴。<br>
+            魂を揺さぶるG（重力）と恐怖が<br>
+            我々を待っている。
+        </p>
+    </section>
+
+    <!-- Attractions Lineup -->
+    <section class="relative z-10 max-w-4xl mx-auto px-4 py-10">
+        <h2 class="text-3xl font-brush text-center mb-10 border-b border-gray-700 pb-4">
+            <span class="text-red-500">◆</span> 攻略対象・五大妖怪 <span class="text-red-500">◆</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- FUJIYAMA -->
+            <div class="group relative bg-gray-900/80 border border-gray-700 rounded-lg overflow-hidden hover:border-red-500 transition-all duration-300 neon-box">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <!-- 画像差し替え: 公式サイトURL -->
+                    <img src="https://www.fujiq.jp/attraction/ilnf27000000024l-img/fujiyama1440-900.png" alt="FUJIYAMA" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                    <div class="absolute bottom-2 left-4 z-20">
+                        <h3 class="text-3xl font-horror text-white drop-shadow-md">FUJIYAMA</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-red-400 mb-2 font-bold tracking-widest">KING OF COASTERS</p>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        最高速度130km/h、最大落差70m、最後部79m。<br>
+                        世界に誇る「キング・オブ・コースター」。<br>
+                        まずはこれで2025年の厄を振り落とせ。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Eejanaika -->
+            <div class="group relative bg-gray-900/80 border border-gray-700 rounded-lg overflow-hidden hover:border-red-500 transition-all duration-300 neon-box">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <!-- 画像差し替え: 公式サイトURL -->
+                    <img src="https://www.fujiq.jp/attraction/ilnf270000000ee6-img/eejanaika.jpg" alt="ええじゃないか" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                    <div class="absolute bottom-2 left-4 z-20">
+                        <h3 class="text-3xl font-brush text-white drop-shadow-md">ええじゃないか</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-red-400 mb-2 font-bold tracking-widest">4TH DIMENSION COASTER</p>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        座席が前後方向に回転する総回転数世界一のコースター。<br>
+                        天も地もわからなくなる極限の無重力体験。<br>
+                        靴を脱いで、空へ投げ出されろ。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Takabisha -->
+            <div class="group relative bg-gray-900/80 border border-gray-700 rounded-lg overflow-hidden hover:border-red-500 transition-all duration-300 neon-box">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <!-- 画像差し替え: 公式サイトURL -->
+                    <img src="https://www.fujiq.jp/attraction/ilnf2700000002qv-img/takabisha_main.jpg" alt="高飛車" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                    <div class="absolute bottom-2 left-4 z-20">
+                        <h3 class="text-3xl font-brush text-white drop-shadow-md">高飛車</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-red-400 mb-2 font-bold tracking-widest">FALL ANGLE 121°</p>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        最大落下角度121度。<br>
+                        えぐるような落下と、空を見上げる垂直巻き上げ。<br>
+                        一時停止する頂上で、己の覚悟を問われる。
+                    </p>
+                </div>
+            </div>
+
+            <!-- ZOKKON -->
+            <div class="group relative bg-gray-900/80 border border-gray-700 rounded-lg overflow-hidden hover:border-red-500 transition-all duration-300 neon-box">
+                <div class="h-48 overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+                    <!-- 画像差し替え: 公式サイトURL -->
+                    <img src="https://www.fujiq.jp/attraction/ilnf270000000512-img/zokkon1440-900.jpg" alt="ZOKKON" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0">
+                    <div class="absolute bottom-2 left-4 z-20">
+                        <h3 class="text-3xl font-horror text-green-400 drop-shadow-md">ZOKKON</h3>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <p class="text-sm text-green-400 mb-2 font-bold tracking-widest">BIKE RIDE COASTER</p>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        バイク型のライドに乗り込み、急加速。<br>
+                        ハンドルを握りしめ、風を切れ。<br>
+                        爽快感MAXの次世代コースター。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Senritsu Meikyu (Special Layout) -->
+            <div class="md:col-span-2 mt-8 group relative bg-red-950/30 border-2 border-red-900 rounded-lg overflow-hidden hover:border-red-600 transition-all duration-300 neon-box">
+                <div class="absolute top-0 right-0 bg-red-700 text-white text-xs font-bold px-3 py-1">最恐注意</div>
+                <div class="grid md:grid-cols-2">
+                    <div class="h-64 md:h-auto overflow-hidden relative">
+                         <!-- 画像差し替え: 公式サイトURL -->
+                         <img src="https://www.fujiq.jp/attraction/ilnf270000000kv0-img/yaminiugomekubyoutou.png" alt="戦慄迷宮" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-500">
+                         <div class="absolute inset-0 bg-black/30"></div>
+                    </div>
+                    <div class="p-6 flex flex-col justify-center relative">
+                        <h3 class="text-4xl font-brush text-red-500 mb-4 glitch-effect" style="text-shadow: 2px 2px 0px #000;">戦慄迷宮<br><span class="text-lg text-gray-400">～慈急総合病院～</span></h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            全長900m、所要時間約50分。<br>
+                            世界最長クラスのお化け屋敷。<br>
+                            五感を刺激する恐怖の中で、<br>
+                            最後まで正気を保てるか。
+                        </p>
+                        <div class="border border-red-800 bg-black/50 p-3 rounded text-center">
+                            <p class="text-xs text-red-400">※リタイア扉あり ※心臓の弱い方は注意</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zetsubo Yosai (Special Layout) -->
+            <div class="md:col-span-2 mt-8 group relative bg-gray-900/80 border-2 border-gray-700 rounded-lg overflow-hidden hover:border-purple-500 transition-all duration-300 neon-box" style="box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); border-color: rgba(168, 85, 247, 0.5);">
+                <div class="absolute top-0 right-0 bg-purple-700 text-white text-xs font-bold px-3 py-1">難攻不落</div>
+                <div class="grid md:grid-cols-2">
+                    <div class="p-6 flex flex-col justify-center relative md:order-2">
+                        <h3 class="text-3xl font-horror text-purple-400 mb-4" style="text-shadow: 2px 2px 0px #000;">絶望要塞<br><span class="text-lg font-brush">-IMPOSSIBLE GAMES-</span></h3>
+                        <p class="text-sm text-purple-400 mb-2 font-bold tracking-widest">MISSION CLEAR RATE 0.0001%</p>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            数々のトラップが仕掛けられた要塞。<br>
+                            知力・体力・時の運、全てを駆使しなければ生還は不可能。<br>
+                            絶望的なミッションに挑め。
+                        </p>
+                    </div>
+                    <div class="h-64 md:h-auto overflow-hidden relative md:order-1">
+                         <!-- 画像差し替え: 公式サイトURL -->
+                         <img src="https://www.fujiq.jp/attraction/ilnf270000000kyq-img/zetsubo.main.png" alt="絶望要塞" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500 grayscale group-hover:grayscale-0">
+                         <div class="absolute inset-0 bg-purple-900/20"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Schedule -->
+    <section class="relative z-10 max-w-2xl mx-auto px-6 py-16">
+        <h2 class="text-2xl font-bold text-center mb-8 tracking-widest">
+            <span class="border-b-2 border-red-600 pb-2">全妖怪討伐・作戦行動予定</span>
+        </h2>
+        
+        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-700 before:to-transparent">
+            
+            <!-- Item 1: 集合 -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-gray-400">
+                    08:00
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900 p-4 rounded border border-gray-800 shadow-lg">
+                    <h3 class="font-bold text-red-400 mb-1">新宿駅 集合</h3>
+                    <p class="text-xs text-gray-400">遅刻厳禁。バス内で睡眠を確保せよ。</p>
+                </div>
+            </div>
+
+            <!-- Item 2: 午前 -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-gray-400">
+                    10:00
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900 p-4 rounded border border-gray-800 shadow-lg">
+                    <h3 class="font-bold text-white mb-1">第一次攻撃（午前）</h3>
+                    <p class="text-sm text-red-300 mb-1">目標：FUJIYAMA & 高飛車</p>
+                    <p class="text-xs text-gray-400">入園直後、元気なうちにG（重力）系を攻略。</p>
+                </div>
+            </div>
+
+            <!-- Item 3: 昼食 -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-gray-400">
+                    12:30
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900/50 p-3 rounded border border-gray-800 shadow-lg">
+                    <h3 class="font-bold text-gray-300 mb-1">兵站補給（昼食）</h3>
+                    <p class="text-xs text-gray-500">フードコートで作戦会議。食べ過ぎ注意。</p>
+                </div>
+            </div>
+
+            <!-- Item 4: 午後1 -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-gray-400">
+                    13:30
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900 p-4 rounded border border-gray-800 shadow-lg">
+                    <h3 class="font-bold text-white mb-1">第二次攻撃（午後Ⅰ）</h3>
+                    <p class="text-sm text-red-300 mb-1">目標：ええじゃないか & ZOKKON</p>
+                    <p class="text-xs text-gray-400">三半規管を破壊する回転と、爽快な疾走感。</p>
+                </div>
+            </div>
+
+            <!-- Item 5: 午後2 ミッション -->
+             <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-purple-600 bg-purple-900/30 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-white animate-pulse">
+                    16:00
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-purple-950/20 p-4 rounded border border-purple-900 shadow-lg">
+                    <h3 class="font-bold text-purple-400 mb-1 glitch-effect">特別任務：絶望要塞</h3>
+                    <p class="text-xs text-gray-400">頭脳労働の時間。脱出不可能に挑む。</p>
+                </div>
+            </div>
+
+            <!-- Item 6: 夕方 クライマックス -->
+            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-red-600 bg-red-900/30 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-white animate-pulse">
+                    17:30
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-red-950/20 p-4 rounded border border-red-900 shadow-lg">
+                    <h3 class="font-bold text-red-500 mb-1 glitch-effect">最終決戦：戦慄迷宮</h3>
+                    <p class="text-xs text-gray-400">日が落ちてからの恐怖は別格。生きて帰れ。</p>
+                </div>
+            </div>
+
+             <!-- Item 7: 撤収 -->
+             <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 text-xs text-gray-400">
+                    19:00
+                </div>
+                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-gray-900 p-4 rounded border border-gray-800 shadow-lg">
+                    <h3 class="font-bold text-white mb-1">全作戦終了・撤収</h3>
+                    <p class="text-xs text-gray-400">温泉でHPを回復し、本番の忘年会会場へ移動。</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Checklist -->
+    <section class="relative z-10 max-w-lg mx-auto px-6 py-10 mb-10">
+        <div class="bg-gray-900 border border-dashed border-gray-600 p-6 rounded">
+            <h3 class="text-center font-bold mb-4 text-gray-300">装備品リスト</h3>
+            <ul class="text-sm space-y-2 text-gray-400 list-disc pl-5">
+                <li>フリーパス代（または顔認証準備）</li>
+                <li>防寒具（富士の裾野は極寒）</li>
+                <li>モバイルバッテリー</li>
+                <li>強靭な精神力</li>
+                <li>二日酔い対策薬（翌日用）</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 bg-black text-center py-8 border-t border-gray-900">
+        <p class="font-brush text-2xl text-red-600 mb-2">生存者、求ム。</p>
+        <p class="text-xs text-gray-600">Produced for AKKI YAKO 2025</p>
+    </footer>
+
+</body>
+</html>
