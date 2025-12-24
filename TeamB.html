@@ -28,6 +28,7 @@
             padding: 0;
             padding-bottom: 350px; /* スコアボード用の余白 */
             box-sizing: border-box;
+            overscroll-behavior: none; /* スマホでのバウンス防止 */
         }
 
         h1, h2, .score-num, .quiz-number {
@@ -308,12 +309,52 @@
             left: 0;
             width: 100%;
             background: rgba(20, 20, 20, 0.95);
-            border-top: 3px solid var(--accent-color);
-            padding: 15px 10px;
+            /* border-topはリサイズハンドルへ移動 */
+            padding: 25px 10px 15px 10px; /* 上部にハンドル用の余白 */
             box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
             z-index: 100;
-            height: 320px; /* 固定高さ */
+            height: 320px; /* 初期高さ */
+            min-height: 100px; /* 最小高さ */
+            overflow-y: hidden; /* コンテナ自体はスクロールさせず、中身をスクロールさせる */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* リサイズハンドル */
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            cursor: row-resize;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 3px solid var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 101;
+        }
+        /* ハンドルのつまみデザイン */
+        .resize-handle::after {
+            content: "";
+            width: 40px;
+            height: 4px;
+            background-color: #777;
+            border-radius: 2px;
+        }
+        .resize-handle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .resize-handle:hover::after {
+            background-color: #aaa;
+        }
+
+        /* スコアボードの中身（スクロール可能領域） */
+        .scoreboard-content {
+            flex: 1;
             overflow-y: auto;
+            padding-bottom: 20px;
         }
 
         .scoreboard-header {
@@ -326,6 +367,7 @@
             align-items: center;
             max-width: 1000px;
             margin: 0 auto 10px auto;
+            flex-shrink: 0; /* ヘッダーは縮ませない */
         }
 
         .reset-all-btn {
@@ -619,14 +661,20 @@
 </div>
 
 <!-- リアルタイム集計パネル -->
-<div class="scoreboard-panel">
-    <div class="scoreboard-header">
-        <span class="dot-font">REALTIME SCOREBOARD</span>
-        <button class="reset-all-btn" onclick="resetAllScores()">Reset All</button>
-    </div>
+<div class="scoreboard-panel" id="scoreboardPanel">
+    <!-- リサイズハンドル -->
+    <div class="resize-handle" id="resizeHandle"></div>
     
-    <div class="players-grid" id="playersGrid">
-        <!-- JSでプレイヤーカードを生成 -->
+    <!-- スクロールエリア -->
+    <div class="scoreboard-content">
+        <div class="scoreboard-header">
+            <span class="dot-font">REALTIME SCOREBOARD</span>
+            <button class="reset-all-btn" onclick="resetAllScores()">Reset All</button>
+        </div>
+        
+        <div class="players-grid" id="playersGrid">
+            <!-- JSでプレイヤーカードを生成 -->
+        </div>
     </div>
 </div>
 
@@ -650,8 +698,8 @@
         const pass = document.getElementById('login-pass').value;
         const errorMsg = document.getElementById('login-error');
         
-        // パスワード判定 (teamb / 1qAZXSw2)
-        if (id === 'teamb' && pass === '1qAZXSw2') {
+        // パスワード判定 (teamb / musyokutensei12manmaketa)
+        if (id === 'teamb' && pass === 'musyokutensei12manmaketa') {
             document.getElementById('login-overlay').style.display = 'none';
         } else {
             errorMsg.style.display = 'block';
@@ -895,6 +943,9 @@
         
         // クイズ初期表示
         renderQuiz();
+        
+        // スコアボードのリサイズ初期化
+        initResizeHandle();
     }
 
     // スコアボード描画
@@ -984,6 +1035,62 @@
             quizTabBtn.classList.add('active');
         } else {
             document.querySelector('button[onclick="switchTab(\'box\')"]').classList.add('active');
+        }
+    }
+
+    /* =========================================
+       スコアボードのリサイズ機能
+       ========================================= */
+    function initResizeHandle() {
+        const panel = document.getElementById('scoreboardPanel');
+        const handle = document.getElementById('resizeHandle');
+        let isResizing = false;
+        let startY, startHeight;
+
+        // マウス操作用
+        handle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startY = e.clientY;
+            startHeight = parseInt(window.getComputedStyle(panel).height, 10);
+            
+            document.addEventListener('mousemove', doDrag);
+            document.addEventListener('mouseup', stopDrag);
+            e.preventDefault();
+        });
+
+        // タッチ操作用（スマホ）
+        handle.addEventListener('touchstart', (e) => {
+            isResizing = true;
+            startY = e.touches[0].clientY;
+            startHeight = parseInt(window.getComputedStyle(panel).height, 10);
+            
+            document.addEventListener('touchmove', doDrag);
+            document.addEventListener('touchend', stopDrag);
+        }, {passive: false});
+
+        function doDrag(e) {
+            if (!isResizing) return;
+            
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+            
+            // 下固定なので、マウスが上にいく(Yが減る)と高さが増える
+            const delta = startY - clientY;
+            const newHeight = startHeight + delta;
+
+            // 最小・最大制限
+            if (newHeight > 100 && newHeight < window.innerHeight - 50) {
+                panel.style.height = `${newHeight}px`;
+            }
+            
+            if(e.type.includes('touch')) e.preventDefault(); // スクロール防止
+        }
+
+        function stopDrag() {
+            isResizing = false;
+            document.removeEventListener('mousemove', doDrag);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchmove', doDrag);
+            document.removeEventListener('touchend', stopDrag);
         }
     }
 
