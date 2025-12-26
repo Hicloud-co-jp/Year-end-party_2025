@@ -40,7 +40,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1400px; /* ★幅を広げました */
             margin: 0 auto;
             padding: 20px;
         }
@@ -144,6 +144,22 @@
         .quiz-container {
             text-align: center;
         }
+
+        /* ★新設：2カラムレイアウト用 */
+        .quiz-layout {
+            display: flex;
+            gap: 30px;
+            text-align: left;
+            align-items: flex-start;
+        }
+        .quiz-left-col {
+            flex: 2; /* 左側（問題）を広く */
+            min-width: 0; /* flexアイテムのはみ出し防止 */
+        }
+        .quiz-right-col {
+            flex: 1; /* 右側（入力パネル） */
+            min-width: 350px;
+        }
         
         .quiz-meta {
             display: flex;
@@ -167,7 +183,7 @@
 
         .quiz-media-box {
             width: 100%;
-            height: 300px; /* 画像エリアの高さ */
+            height: 350px; /* 画像エリアの高さを少し調整 */
             background: #000;
             margin-bottom: 20px;
             display: flex;
@@ -190,6 +206,7 @@
             font-weight: bold;
             text-align: left;
             padding: 0 10px;
+            line-height: 1.4;
         }
 
         .quiz-options-grid {
@@ -244,26 +261,110 @@
             100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
         }
 
+        /* --- 回答入力パネル（右カラム用） --- */
+        .answer-panel {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #555;
+            border-radius: 10px;
+            padding: 20px;
+            /* margin-top: 30px; 削除：右カラム配置のため */
+            text-align: left;
+            position: sticky; /* スクロールしてもついてくるように */
+            top: 20px;
+        }
+        .answer-panel h3 {
+            margin-top: 0;
+            color: #aaa;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .answer-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            justify-content: space-between;
+        }
+        .answer-player-name {
+            width: 100px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .answer-btns {
+            display: flex;
+            gap: 5px; /* 少し詰める */
+        }
+        .ans-btn {
+            width: 35px; /* 少し小さく */
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid #666;
+            background: #222;
+            color: #888;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        /* 選択中のスタイル */
+        .ans-btn.selected {
+            background: var(--quiz-color);
+            color: #fff;
+            border-color: #fff;
+            transform: scale(1.1);
+        }
+        /* 正解判定後のスタイル */
+        .ans-btn.result-correct {
+            background: var(--correct-color);
+            border-color: #f1c40f;
+            box-shadow: 0 0 10px var(--correct-color);
+        }
+        .ans-btn.result-wrong {
+            background: #333;
+            color: #444;
+            border-color: #333;
+        }
+        
+        /* 判定結果マーク */
+        .result-mark {
+            width: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+
         .quiz-controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            flex-wrap: wrap; /* ボタンが多い場合に折り返し */
         }
 
         .control-btn {
-            padding: 15px 40px;
-            font-size: 1.5rem;
+            padding: 10px 20px;
+            font-size: 1.2rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-family: 'Reggae One', serif;
             transition: transform 0.2s;
+            flex: 1;
+            min-width: 120px;
         }
         
-        .btn-prev { background: #555; color: #fff; padding: 15px 20px; font-size: 1.2rem; }
-        .btn-show { background: var(--quiz-color); color: #fff; }
-        .btn-next { background: var(--accent-color); color: #000; }
+        .btn-prev { background: #555; color: #fff; }
+        .btn-show { background: var(--quiz-color); color: #fff; flex: 2; /* 正解ボタンは大きく */ }
+        .btn-next { background: var(--accent-color); color: #000; flex: 2; }
         .control-btn:hover { transform: scale(1.05); }
 
         /* --- 箱の中身スタイル --- */
@@ -544,6 +645,10 @@
         }
 
         /* レスポンシブ */
+        @media (max-width: 1024px) {
+            .quiz-layout { flex-direction: column; }
+            .quiz-right-col { width: 100%; }
+        }
         @media (max-width: 768px) {
             h1 { font-size: 1.8rem; }
             .tab-btn { font-size: 1rem; padding: 10px 15px; }
@@ -552,6 +657,8 @@
             .scoreboard-panel { height: 380px; }
             .quiz-options-grid { grid-template-columns: 1fr; }
             .btn-prev { padding: 15px 15px; font-size: 1rem; }
+            .answer-row { font-size: 0.9rem; }
+            .ans-btn { width: 35px; height: 35px; }
         }
     </style>
 </head>
@@ -592,28 +699,46 @@
                 <span id="quiz-count" class="quiz-number">Q.1</span>
             </div>
 
-            <!-- 画像・動画エリア -->
-            <div class="quiz-media-box">
-                <img id="quiz-image" src="" alt="問題画像" style="display:none;">
-                <video id="quiz-video" src="" controls style="display:none;"></video>
-                <div id="quiz-media-placeholder" style="color:#666;">（画像/動画エリア）</div>
-            </div>
+            <!-- ★2カラムレイアウト -->
+            <div class="quiz-layout">
+                <!-- 左カラム：問題・画像・選択肢 -->
+                <div class="quiz-left-col">
+                    <!-- 画像・動画エリア -->
+                    <div class="quiz-media-box">
+                        <img id="quiz-image" src="" alt="問題画像" style="display:none;">
+                        <video id="quiz-video" src="" controls style="display:none;"></video>
+                        <div id="quiz-media-placeholder" style="color:#666;">（画像/動画エリア）</div>
+                    </div>
 
-            <div id="quiz-text" class="quiz-question-text">
-                ここに問題文が表示されます。
-            </div>
+                    <div id="quiz-text" class="quiz-question-text">
+                        ここに問題文が表示されます。
+                    </div>
 
-            <div id="quiz-options" class="quiz-options-grid">
-                <div class="quiz-option" id="opt-0">A. 選択肢1</div>
-                <div class="quiz-option" id="opt-1">B. 選択肢2</div>
-                <div class="quiz-option" id="opt-2">C. 選択肢3</div>
-                <div class="quiz-option" id="opt-3">D. 選択肢4</div>
-            </div>
+                    <div id="quiz-options" class="quiz-options-grid">
+                        <div class="quiz-option" id="opt-0">A. 選択肢1</div>
+                        <div class="quiz-option" id="opt-1">B. 選択肢2</div>
+                        <div class="quiz-option" id="opt-2">C. 選択肢3</div>
+                        <div class="quiz-option" id="opt-3">D. 選択肢4</div>
+                    </div>
+                </div>
 
-            <div class="quiz-controls">
-                <button id="btn-prev" class="control-btn btn-prev" onclick="prevQuestion()" style="display:none;">前へ</button>
-                <button id="btn-answer" class="control-btn btn-show" onclick="showAnswer()">正解を表示</button>
-                <button id="btn-next" class="control-btn btn-next" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
+                <!-- 右カラム：回答入力・ボタン -->
+                <div class="quiz-right-col">
+                    <!-- 回答入力エリア -->
+                    <div class="answer-panel">
+                        <h3>▼ 参加者の回答入力 (司会者用)</h3>
+                        <div id="answer-rows-container">
+                            <!-- JSで参加者分の行を生成 -->
+                        </div>
+                        
+                        <!-- コントロールボタンをここに移動 -->
+                        <div class="quiz-controls">
+                            <button id="btn-prev" class="control-btn btn-prev" onclick="prevQuestion()" style="display:none;">前へ</button>
+                            <button id="btn-answer" class="control-btn btn-show" onclick="showAnswer()">正解を表示</button>
+                            <button id="btn-next" class="control-btn btn-next" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -718,19 +843,30 @@
     }
 
     /* =========================================
-       クイズデータ（ここを編集して問題を作成）
+       データ定義
        ========================================= */
-    // 画像は https://placehold.co/600x400/000000/FFF?text=Question+Image のようなダミーを入れています
+    // 参加者リスト
+    const players = [
+        "小田ちゃん", 
+        "RENちゃん", 
+        "安達さん", 
+        "さとし", 
+        "おったん", 
+        "としくん", 
+        "ようちゃん"
+    ];
+
+    // クイズデータ
     const quizData = [
         // 赤岡先生 (Q1, Q2)
         {
             presenter: "赤岡先生からの出題",
             question: "第1問：今年、赤岡先生がこっそり始めた趣味はどれでしょう？",
             options: ["A. ソロキャンプ", "B. バイオリン", "C. ポケモンカード", "D. 筋トレ"],
-            answerIndex: 0, // A=0, B=1, C=2, D=3
-            mediaType: "image", // image or video or none
+            answerIndex: 0, 
+            mediaType: "image", 
             mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q1+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q1+Answer" // 正解時の画像
+            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q1+Answer" 
         },
         {
             presenter: "赤岡先生からの出題",
@@ -820,10 +956,20 @@
     ];
 
     /* =========================================
-       クイズ進行ロジック
+       状態管理
        ========================================= */
     let currentQuizIndex = 0;
+    let scores = {};
+    // クイズ回答の一時保存用 { "小田ちゃん": 0, "RENちゃん": 2, ... } (0=A, 1=B...)
+    let currentRoundAnswers = {};
+    // 現在の問題でポイント加算済みかどうかのフラグ
+    let isPointsAdded = false;
 
+
+    /* =========================================
+       クイズ進行ロジック
+       ========================================= */
+    
     function renderQuiz() {
         if (currentQuizIndex >= quizData.length) {
             document.getElementById('quiz-display').style.display = 'none';
@@ -833,6 +979,10 @@
 
         const data = quizData[currentQuizIndex];
         
+        // 状態リセット
+        isPointsAdded = false;
+        currentRoundAnswers = {}; // 回答リセット
+
         // テキスト更新
         document.getElementById('quiz-presenter').textContent = data.presenter;
         document.getElementById('quiz-count').textContent = `Q.${currentQuizIndex + 1}`;
@@ -864,35 +1014,130 @@
             optEl.className = 'quiz-option'; // クラスリセット
         }
 
+        // 回答入力パネルの生成
+        renderAnswerBoard();
+
         // ボタンリセット
         document.getElementById('btn-answer').style.display = 'inline-block';
         document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('btn-answer').textContent = "正解を表示";
+        document.getElementById('btn-answer').disabled = false;
 
-        // 戻るボタンの制御（1問目は非表示）
+        // 戻るボタンの制御
         document.getElementById('btn-prev').style.display = currentQuizIndex > 0 ? 'inline-block' : 'none';
     }
 
+    // 回答入力パネルを描画する関数
+    function renderAnswerBoard() {
+        const container = document.getElementById('answer-rows-container');
+        container.innerHTML = '';
+
+        players.forEach((player, pIndex) => {
+            const row = document.createElement('div');
+            row.className = 'answer-row';
+            
+            // 名前
+            const nameEl = document.createElement('div');
+            nameEl.className = 'answer-player-name';
+            nameEl.textContent = player;
+            row.appendChild(nameEl);
+
+            // ボタン群
+            const btnsEl = document.createElement('div');
+            btnsEl.className = 'answer-btns';
+            
+            const options = ['A', 'B', 'C', 'D'];
+            options.forEach((opt, optIndex) => {
+                const btn = document.createElement('div');
+                btn.className = 'ans-btn';
+                btn.textContent = opt;
+                btn.id = `ans-${pIndex}-${optIndex}`;
+                btn.onclick = () => selectAnswer(player, optIndex, pIndex);
+                btnsEl.appendChild(btn);
+            });
+
+            row.appendChild(btnsEl);
+            
+            // 判定結果表示用
+            const resultEl = document.createElement('div');
+            resultEl.className = 'result-mark';
+            resultEl.id = `result-${pIndex}`;
+            row.appendChild(resultEl);
+
+            container.appendChild(row);
+        });
+    }
+
+    // 回答選択時の処理
+    function selectAnswer(player, optIndex, pIndex) {
+        if (isPointsAdded) return; // 正解表示後は変更不可
+
+        // データ保存
+        currentRoundAnswers[player] = optIndex;
+
+        // UI更新（その人の他の選択を解除し、これをハイライト）
+        for(let i=0; i<4; i++) {
+            const btn = document.getElementById(`ans-${pIndex}-${i}`);
+            if (i === optIndex) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        }
+    }
+
+    // 正解表示＆採点処理
     function showAnswer() {
         const data = quizData[currentQuizIndex];
+        const correctIndex = data.answerIndex;
         
-        // 正解の強調
+        // --- メイン画面の正解強調 ---
         for(let i=0; i<4; i++) {
             const optEl = document.getElementById(`opt-${i}`);
-            if (i === data.answerIndex) {
+            if (i === correctIndex) {
                 optEl.classList.add('correct-answer');
             } else {
                 optEl.classList.add('fade-out');
             }
         }
 
-        // 正解時の画像切り替え（あれば）
+        // --- メディア切り替え ---
         if (data.answerMediaSrc) {
              const imgEl = document.getElementById('quiz-image');
-             const vidEl = document.getElementById('quiz-video');
-             // 動画の場合は切り替えない等の制御も可能だが、ここでは画像があれば画像に切り替え
              if(data.mediaType === 'image') {
                  imgEl.src = data.answerMediaSrc;
              }
+        }
+
+        // --- 自動採点とポイント加算 ---
+        if (!isPointsAdded) {
+            players.forEach((player, pIndex) => {
+                const selected = currentRoundAnswers[player];
+                const resultMark = document.getElementById(`result-${pIndex}`);
+
+                // 選択されているボタンのスタイルを変更
+                if (selected !== undefined) {
+                    const btn = document.getElementById(`ans-${pIndex}-${selected}`);
+                    if (selected === correctIndex) {
+                        // 正解！
+                        btn.classList.add('result-correct');
+                        resultMark.textContent = "⭕️";
+                        resultMark.style.color = "#e74c3c";
+                        // ポイント加算
+                        updateScore(player, 1);
+                    } else {
+                        // 不正解
+                        btn.classList.add('result-wrong');
+                        resultMark.textContent = "❌";
+                        resultMark.style.color = "#555";
+                    }
+                } else {
+                    // 未回答
+                     resultMark.textContent = "ー";
+                     resultMark.style.color = "#555";
+                }
+            });
+            isPointsAdded = true;
         }
 
         // ボタン切り替え
@@ -905,7 +1150,6 @@
         renderQuiz();
     }
 
-    // 前の問題へ戻る
     function prevQuestion() {
         if (currentQuizIndex > 0) {
             currentQuizIndex--;
@@ -915,22 +1159,8 @@
 
 
     /* =========================================
-       得点管理・タブ切り替えロジック
+       得点管理・共通処理
        ========================================= */
-    // 参加者リスト
-    const players = [
-        "小田ちゃん", 
-        "RENちゃん", 
-        "安達さん", 
-        "さとし", 
-        "おったん", 
-        "としくん", 
-        "ようちゃん"
-    ];
-
-    // 初期スコア（ローカルストレージから読み込むか、0で初期化）
-    let scores = {};
-
     // 初期化処理
     function init() {
         const savedScores = localStorage.getItem('bonenkai_teamB_scores');
@@ -977,15 +1207,17 @@
         scores[player] += delta;
         if (scores[player] < 0) scores[player] = 0; // マイナスにはしない
 
+        // 画面更新
         const scoreEl = document.getElementById(`score-${player}`);
-        scoreEl.innerText = scores[player];
-        
-        scoreEl.style.color = '#fff';
-        scoreEl.style.transform = 'scale(1.2)';
-        setTimeout(() => {
-            scoreEl.style.color = 'var(--accent-color)';
-            scoreEl.style.transform = 'scale(1)';
-        }, 200);
+        if(scoreEl) {
+            scoreEl.innerText = scores[player];
+            scoreEl.style.color = '#fff';
+            scoreEl.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                scoreEl.style.color = 'var(--accent-color)';
+                scoreEl.style.transform = 'scale(1)';
+            }, 200);
+        }
 
         saveScores();
     }
@@ -995,12 +1227,10 @@
         document.getElementById('resetModal').classList.add('active');
     }
 
-    // モーダルを閉じる
     function closeResetModal() {
         document.getElementById('resetModal').classList.remove('active');
     }
 
-    // リセット実行
     function executeReset() {
         players.forEach(p => scores[p] = 0);
         renderScoreboard();
@@ -1008,7 +1238,6 @@
         closeResetModal();
     }
 
-    // ローカルストレージ保存
     function saveScores() {
         localStorage.setItem('bonenkai_teamB_scores', JSON.stringify(scores));
     }
@@ -1018,7 +1247,7 @@
         const quizTabBtn = document.querySelector('button[onclick="switchTab(\'quiz\')"]');
         const isQuizActive = quizTabBtn.classList.contains('active');
 
-        // ★追加機能：クイズタブが既にアクティブな状態で、再度クイズタブを押した場合 -> 最初に戻る（リセット）
+        // クイズタブ再押下でリセット
         if (tabId === 'quiz' && isQuizActive) {
             currentQuizIndex = 0;
             document.getElementById('quiz-end').style.display = 'none';
@@ -1047,7 +1276,6 @@
         let isResizing = false;
         let startY, startHeight;
 
-        // マウス操作用
         handle.addEventListener('mousedown', (e) => {
             isResizing = true;
             startY = e.clientY;
@@ -1058,7 +1286,6 @@
             e.preventDefault();
         });
 
-        // タッチ操作用（スマホ）
         handle.addEventListener('touchstart', (e) => {
             isResizing = true;
             startY = e.touches[0].clientY;
@@ -1070,19 +1297,14 @@
 
         function doDrag(e) {
             if (!isResizing) return;
-            
             const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-            
-            // 下固定なので、マウスが上にいく(Yが減る)と高さが増える
             const delta = startY - clientY;
             const newHeight = startHeight + delta;
 
-            // 最小・最大制限
             if (newHeight > 100 && newHeight < window.innerHeight - 50) {
                 panel.style.height = `${newHeight}px`;
             }
-            
-            if(e.type.includes('touch')) e.preventDefault(); // スクロール防止
+            if(e.type.includes('touch')) e.preventDefault(); 
         }
 
         function stopDrag() {
