@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>企画チームB 出し物＆得点集計</title>
+    <title>企画チームB 忘年会アプリ</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Reggae+One&family=Zen+Kaku+Gothic+New:wght@400;700&family=DotGothic16&display=swap" rel="stylesheet">
+    <!-- QR Code Lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
     <style>
         :root {
             --bg-color: #121212;
             --text-color: #f0f0f0;
-            --accent-color: #d4af37; /* シャンパンゴールド */
-            --quiz-color: #3498db; /* クイズのテーマ色 */
-            --correct-color: #e74c3c; /* 正解の色 */
-            --box-color: #e74c3c; /* 箱の中身のテーマ色 */
+            --accent-color: #d4af37;
+            --quiz-color: #3498db;
+            --correct-color: #e74c3c;
             --card-bg: #1e1e1e;
-            --score-bg: #2c3e50;
         }
 
         body {
@@ -26,847 +27,237 @@
             font-family: 'Zen Kaku Gothic New', sans-serif;
             margin: 0;
             padding: 0;
-            padding-bottom: 350px; /* スコアボード用の余白 */
             box-sizing: border-box;
-            overscroll-behavior: none; /* スマホでのバウンス防止 */
+            overscroll-behavior: none;
         }
 
-        h1, h2, .score-num, .quiz-number {
-            font-family: 'Reggae One', serif;
-        }
+        /* 共通スタイル */
+        h1, h2, .reg-font { font-family: 'Reggae One', serif; }
+        .dot-font { font-family: 'DotGothic16', sans-serif; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .hidden { display: none !important; }
 
-        .dot-font {
-            font-family: 'DotGothic16', sans-serif;
-        }
-
-        .container {
-            max-width: 1400px; /* ★幅を広げました */
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* ヘッダー */
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid var(--accent-color);
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            margin: 0;
-            color: var(--accent-color);
-            font-size: 2.5rem;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-
-        /* タブ切り替え */
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: 2px solid #555;
-            color: #888;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-family: 'Reggae One', serif;
-        }
-
-        .tab-btn.active {
-            color: #fff;
-            border-color: var(--accent-color);
-            background: rgba(212, 175, 55, 0.1);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-            transform: scale(1.05);
-        }
-
-        /* コンテンツエリア */
-        .content-section {
-            display: none;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 2rem;
-            border-bottom: 2px solid #555;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-
-        .quiz-title { color: var(--quiz-color); border-color: var(--quiz-color); }
-        .box-title { color: var(--box-color); border-color: var(--box-color); }
-
-        ul {
-            font-size: 1.3rem;
-            line-height: 1.8;
-            list-style-type: none;
-            padding-left: 10px;
-        }
-
-        li {
-            margin-bottom: 15px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        li::before {
-            content: "▶";
-            position: absolute;
-            left: 0;
-            color: var(--accent-color);
-            font-size: 0.8em;
-            top: 5px;
-        }
-
-        /* --- クイズスタイル追加 --- */
-        .quiz-container {
-            text-align: center;
-        }
-
-        /* ★新設：2カラムレイアウト用 */
-        .quiz-layout {
-            display: flex;
-            gap: 30px;
-            text-align: left;
-            align-items: flex-start;
-        }
-        .quiz-left-col {
-            flex: 2; /* 左側（問題）を広く */
-            min-width: 0; /* flexアイテムのはみ出し防止 */
-        }
-        .quiz-right-col {
-            flex: 1; /* 右側（入力パネル） */
-            min-width: 350px;
-        }
+        /* --- 画面切り替え --- */
+        #view-setup, #view-host, #view-client { display: none; }
         
-        .quiz-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-        }
-
-        .quiz-presenter {
-            font-size: 1.5rem;
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        .quiz-number {
-            font-size: 2rem;
-            color: var(--quiz-color);
-        }
-
-        .quiz-media-box {
-            width: 100%;
-            height: 350px; /* 画像エリアの高さを少し調整 */
-            background: #000;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #333;
-        }
-
-        .quiz-media-box img, .quiz-media-box video {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .quiz-question-text {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            font-weight: bold;
-            text-align: left;
-            padding: 0 10px;
-            line-height: 1.4;
-        }
-
-        .quiz-options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .quiz-option {
-            background: #333;
-            color: #fff;
-            border: 2px solid #555;
-            padding: 20px;
-            font-size: 1.5rem;
-            border-radius: 10px;
-            cursor: default; /* 参加者が押すわけではないので */
-            text-align: left;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        /* 正解発表時のスタイル */
-        .quiz-option.correct-answer {
-            background: var(--correct-color);
-            border-color: #ff0000;
-            color: #fff;
-            animation: pulse 1s infinite;
-        }
-        
-        .quiz-option.correct-answer::after {
-            content: "正解";
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-family: 'Reggae One', serif;
-            font-size: 1.2rem;
-            background: #fff;
-            color: var(--correct-color);
-            padding: 2px 10px;
-            border-radius: 5px;
-        }
-
-        .quiz-option.fade-out {
-            opacity: 0.3;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
-        }
-
-        /* --- 回答入力パネル（右カラム用） --- */
-        .answer-panel {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #555;
-            border-radius: 10px;
-            padding: 20px;
-            /* margin-top: 30px; 削除：右カラム配置のため */
-            text-align: left;
-            position: sticky; /* スクロールしてもついてくるように */
-            top: 20px;
-        }
-        .answer-panel h3 {
-            margin-top: 0;
-            color: #aaa;
-            font-size: 1.2rem;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-        .answer-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            justify-content: space-between;
-        }
-        .answer-player-name {
-            width: 100px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .answer-btns {
-            display: flex;
-            gap: 5px; /* 少し詰める */
-        }
-        .ans-btn {
-            width: 35px; /* 少し小さく */
-            height: 35px;
-            border-radius: 50%;
-            border: 2px solid #666;
-            background: #222;
-            color: #888;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-        /* 選択中のスタイル */
-        .ans-btn.selected {
-            background: var(--quiz-color);
-            color: #fff;
-            border-color: #fff;
-            transform: scale(1.1);
-        }
-        /* 正解判定後のスタイル */
-        .ans-btn.result-correct {
-            background: var(--correct-color);
-            border-color: #f1c40f;
-            box-shadow: 0 0 10px var(--correct-color);
-        }
-        .ans-btn.result-wrong {
-            background: #333;
-            color: #444;
-            border-color: #333;
-        }
-        
-        /* 判定結果マーク */
-        .result-mark {
-            width: 30px;
+        /* --- Setup画面 --- */
+        .setup-box {
             text-align: center;
-            font-size: 1.5rem;
-        }
-
-
-        .quiz-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            flex-wrap: wrap; /* ボタンが多い場合に折り返し */
-        }
-
-        .control-btn {
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Reggae One', serif;
-            transition: transform 0.2s;
-            flex: 1;
-            min-width: 120px;
-        }
-        
-        .btn-prev { background: #555; color: #fff; }
-        .btn-show { background: var(--quiz-color); color: #fff; flex: 2; /* 正解ボタンは大きく */ }
-        .btn-next { background: var(--accent-color); color: #000; flex: 2; }
-        .control-btn:hover { transform: scale(1.05); }
-
-        /* --- 箱の中身スタイル --- */
-        .group-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .group-title {
-            font-weight: bold;
-            color: var(--accent-color);
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.2rem;
-        }
-        .group-members {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .point-rule {
-            background: #000;
-            border: 2px solid var(--accent-color);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 20px;
-            font-family: 'DotGothic16', sans-serif;
-        }
-        .point-rule span {
-            color: var(--accent-color);
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 10px;
-        }
-
-        /* 固定スコアボード */
-        .scoreboard-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(20, 20, 20, 0.95);
-            /* border-topはリサイズハンドルへ移動 */
-            padding: 25px 10px 15px 10px; /* 上部にハンドル用の余白 */
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
-            z-index: 100;
-            height: 320px; /* 初期高さ */
-            min-height: 100px; /* 最小高さ */
-            overflow-y: hidden; /* コンテナ自体はスクロールさせず、中身をスクロールさせる */
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* リサイズハンドル */
-        .resize-handle {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            cursor: row-resize;
-            background: rgba(255, 255, 255, 0.05);
-            border-top: 3px solid var(--accent-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 101;
-        }
-        /* ハンドルのつまみデザイン */
-        .resize-handle::after {
-            content: "";
-            width: 40px;
-            height: 4px;
-            background-color: #777;
-            border-radius: 2px;
-        }
-        .resize-handle:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .resize-handle:hover::after {
-            background-color: #aaa;
-        }
-
-        /* スコアボードの中身（スクロール可能領域） */
-        .scoreboard-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 20px;
-        }
-
-        .scoreboard-header {
-            text-align: center;
-            font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1000px;
-            margin: 0 auto 10px auto;
-            flex-shrink: 0; /* ヘッダーは縮ませない */
-        }
-
-        .reset-all-btn {
-            background: #c0392b;
-            color: #fff;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .player-card {
-            background: #2c3e50;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #444;
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .player-card:hover {
-            border-color: var(--accent-color);
-        }
-
-        .player-name {
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .score-display {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            font-weight: bold;
-            margin: 5px 0;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-        }
-
-        .btn-point {
-            border: none;
-            border-radius: 4px;
-            padding: 8px 0;
-            font-weight: bold;
-            cursor: pointer;
-            color: #fff;
-            font-size: 1rem;
-            transition: background 0.1s;
-        }
-
-        .btn-add-1 { background: var(--quiz-color); }
-        .btn-add-3 { background: var(--box-color); }
-        .btn-minus { background: #555; grid-column: span 2; font-size: 0.8rem; padding: 4px 0;}
-
-        .btn-point:active { transform: scale(0.95); }
-
-        /* リセット確認モーダル */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-        .modal-content {
-            background: var(--card-bg);
-            border: 2px solid var(--accent-color);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-        .modal-content p {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .modal-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .modal-btn.cancel { background: #555; color: #fff; }
-        .modal-btn.confirm { background: #c0392b; color: #fff; }
-
-        /* --- ログイン画面のスタイル --- */
-        #login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .login-box {
-            background: #1e1e1e;
+            margin-top: 100px;
             padding: 40px;
-            border: 2px solid #d4af37;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
             border-radius: 10px;
-            text-align: center;
-            color: #f0f0f0;
-            width: 90%;
-            max-width: 400px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .login-input {
+        .mode-btn {
             display: block;
-            margin: 15px auto;
-            padding: 12px;
-            width: 80%;
-            font-size: 1rem;
-            border: 1px solid #555;
-            background: #333;
-            color: #fff;
-            border-radius: 5px;
-        }
-        .login-btn {
-            padding: 12px 40px;
-            background: #d4af37;
-            color: #000;
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            font-size: 1.5rem;
             border: none;
-            font-weight: bold;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            border-radius: 5px;
             font-family: 'Reggae One', serif;
         }
-        .login-btn:hover {
-            background: #f1c40f;
-        }
+        .btn-host { background: var(--accent-color); color: #000; }
+        .btn-client { background: var(--quiz-color); color: #fff; }
 
-        /* レスポンシブ */
-        @media (max-width: 1024px) {
-            .quiz-layout { flex-direction: column; }
-            .quiz-right-col { width: 100%; }
+        /* --- Host画面レイアウト --- */
+        .host-header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
         }
-        @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; }
-            .tab-btn { font-size: 1rem; padding: 10px 15px; }
-            .players-grid { grid-template-columns: repeat(3, 1fr); }
-            body { padding-bottom: 400px; }
-            .scoreboard-panel { height: 380px; }
-            .quiz-options-grid { grid-template-columns: 1fr; }
-            .btn-prev { padding: 15px 15px; font-size: 1rem; }
-            .answer-row { font-size: 0.9rem; }
-            .ans-btn { width: 35px; height: 35px; }
+        .host-header h1 { margin: 0; color: var(--accent-color); text-shadow: 0 0 10px rgba(212,175,55,0.5); }
+        
+        /* QRコードエリア */
+        #qr-section {
+            text-align: center;
+            padding: 40px;
+            background: #fff;
+            color: #000;
+            border-radius: 10px;
+            margin-bottom: 40px;
         }
+        #qr-section h2 { margin-top: 0; }
+        #qrcode { margin: 20px auto; }
+        .join-url { font-size: 1.2rem; word-break: break-all; color: #555; }
+
+        /* クイズエリア (2カラム) */
+        .quiz-layout { display: flex; gap: 30px; align-items: flex-start; }
+        .quiz-left { flex: 2; }
+        .quiz-right { flex: 1; min-width: 300px; }
+
+        /* メディア・問題 */
+        .media-box {
+            width: 100%; height: 350px; background: #000;
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid #333; border-radius: 10px; margin-bottom: 20px;
+        }
+        .media-box img, .media-box video { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .question-text { font-size: 1.8rem; margin-bottom: 30px; font-weight: bold; line-height: 1.4; }
+        
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .option-card {
+            background: #333; padding: 20px; border-radius: 10px;
+            font-size: 1.5rem; border: 2px solid #555; position: relative;
+        }
+        .option-card.correct {
+            background: var(--correct-color); border-color: #ff0000; animation: pulse 1s infinite;
+        }
+        .option-card.fade { opacity: 0.3; }
+        
+        /* 参加者ステータスパネル (Host右側) */
+        .status-panel {
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;
+            border: 1px solid #444; max-height: 600px; overflow-y: auto;
+        }
+        .status-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #444;
+        }
+        .status-name { font-weight: bold; font-size: 1.2rem; }
+        .status-mark { font-size: 1.5rem; width: 40px; text-align: center; }
+        .status-answered { color: var(--quiz-color); } /* 回答済み */
+        
+        /* コントロールバー */
+        .control-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.9); border-top: 2px solid var(--accent-color);
+            padding: 15px; display: flex; gap: 20px; justify-content: center; z-index: 1000;
+        }
+        .ctrl-btn {
+            padding: 10px 30px; font-size: 1.2rem; border-radius: 30px; border: none;
+            cursor: pointer; font-family: 'Reggae One', serif; min-width: 150px;
+        }
+        .btn-next { background: var(--accent-color); color: #000; }
+        .btn-show { background: var(--quiz-color); color: #fff; }
+        .btn-start { background: #e74c3c; color: #fff; font-size: 1.5rem; padding: 15px 50px; }
+        .btn-reset { background: #555; color: #fff; font-size: 1rem; position:absolute; right: 20px; top: 20px; padding: 10px; }
+
+        /* --- Client画面レイアウト --- */
+        .client-container {
+            max-width: 600px; margin: 0 auto; padding: 20px; text-align: center;
+            display: flex; flex-direction: column; height: 90vh;
+        }
+        
+        /* 名前入力 */
+        .name-input-area { margin-top: 50px; }
+        .name-input {
+            width: 80%; padding: 15px; font-size: 1.2rem; margin: 20px 0;
+            border-radius: 10px; border: none; text-align: center;
+        }
+        
+        /* 待機画面 */
+        .waiting-area { margin-top: 50px; }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid #333;
+            border-top: 5px solid var(--accent-color); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 回答ボタンエリア */
+        .client-quiz-area {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px;
+        }
+        .ans-btn-client {
+            padding: 30px; font-size: 2rem; border-radius: 15px; border: 2px solid #555;
+            background: #333; color: #fff; cursor: pointer; transition: all 0.2s;
+            font-family: 'Reggae One', serif;
+        }
+        .ans-btn-client.selected {
+            background: var(--quiz-color); border-color: #fff; transform: scale(1.05);
+        }
+        .ans-btn-client:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 結果表示 */
+        .result-popup {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
+            flex-direction: column; z-index: 2000;
+        }
+        .result-text { font-size: 4rem; font-weight: bold; margin-bottom: 20px; }
+        .win { color: var(--correct-color); }
+        .lose { color: #555; }
+
+        /* スコアボード (Host下部) - ドラッグ対応版 */
+        .host-scoreboard {
+            position: fixed; bottom: 80px; left: 0; width: 100%;
+            background: rgba(30,30,30,0.95); z-index: 900;
+            height: 200px; display: flex; flex-direction: column;
+            border-top: 1px solid #444;
+        }
+        .resize-handle {
+            height: 20px; background: #333; cursor: row-resize;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .resize-bar { width: 50px; height: 4px; background: #666; border-radius: 2px; }
+        
+        .players-scroll {
+            flex: 1; overflow-y: auto; padding: 10px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
+        }
+        .p-card {
+            background: #2c3e50; padding: 10px; border-radius: 8px; text-align: center;
+            border: 1px solid #444;
+        }
+        .p-score { font-size: 2rem; color: var(--accent-color); font-weight: bold; }
+        .p-name { font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .score-ctrls { display: flex; justify-content: center; gap: 5px; margin-top: 5px; }
+        .mini-btn { padding: 5px 10px; font-size: 0.8rem; background: #444; border:none; color: #fff; border-radius: 4px; cursor: pointer; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231,76,60,0.7); } 70% { box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
     </style>
 </head>
 <body>
 
-<!-- 簡易ログインオーバーレイ -->
-<div id="login-overlay">
-    <div class="login-box">
-        <h2 style="font-family: 'Reggae One', serif; color: #d4af37; margin-top:0;">ACCESS RESTRICTED</h2>
-        <p>企画チームB 限定コンテンツ<br>IDとパスワードを入力してください</p>
-        <input type="text" id="login-id" class="login-input" placeholder="ID" onkeypress="handleLoginKey(event)">
-        <input type="password" id="login-pass" class="login-input" placeholder="Password" onkeypress="handleLoginKey(event)">
-        <button class="login-btn" onclick="checkLogin()">UNLOCK</button>
-        <p id="login-error" style="color: #e74c3c; display: none; margin-top: 15px; font-weight:bold;">IDまたはパスワードが違います</p>
-    </div>
-</div>
+<!-- Firebase SDK (Modular) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, onSnapshot, updateDoc, addDoc, getDocs, query, writeBatch, increment } 
+    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-<div class="container">
-    <header>
-        <h1>企画チームB 出し物</h1>
-    </header>
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    // ここにFirebaseプロジェクトの設定を貼り付けてください
+    const firebaseConfig = {
+        apiKey: "AIzaSyAJKzF1FDRXUw98iZo3N3IZdt0sKdc-uxU",
+        authDomain: "year-end-party-2025-teamb.firebaseapp.com",
+        projectId: "year-end-party-2025-teamb",
+        storageBucket: "year-end-party-2025-teamb.firebasestorage.app",
+        messagingSenderId: "600737750250",
+        appId: "1:600737750250:web:c5670ed8b6a5058b1e8b93"
+    };
+    // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
-    <!-- タブ切り替えボタン -->
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="switchTab('quiz')">Q. クイズ大会</button>
-        <button class="tab-btn" onclick="switchTab('box')">? 箱の中身</button>
-    </div>
+    // App Init
+    let app, db;
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+    } catch (e) {
+        console.error("Firebase init error. Config might be missing.", e);
+        alert("Firebaseの設定が正しくありません。コード内のconfigを確認してください。");
+    }
 
-    <!-- クイズ大会セクション -->
-    <div id="quiz" class="content-section active">
-        <h2 class="quiz-title">ぼくたちの今年 - QUIZ 2025</h2>
-        <p style="text-align:center; margin-bottom:20px;">企画チームBメンバーの「個人的な近況」を知ってもらうクイズです！</p>
-        
-        <!-- クイズ表示エリア -->
-        <div id="quiz-display" class="quiz-container">
-            <div class="quiz-meta">
-                <span id="quiz-presenter" class="quiz-presenter">担当者名</span>
-                <span id="quiz-count" class="quiz-number">Q.1</span>
-            </div>
-
-            <!-- ★2カラムレイアウト -->
-            <div class="quiz-layout">
-                <!-- 左カラム：問題・画像・選択肢 -->
-                <div class="quiz-left-col">
-                    <!-- 画像・動画エリア -->
-                    <div class="quiz-media-box">
-                        <img id="quiz-image" src="" alt="問題画像" style="display:none;">
-                        <video id="quiz-video" src="" controls style="display:none;"></video>
-                        <div id="quiz-media-placeholder" style="color:#666;">（画像/動画エリア）</div>
-                    </div>
-
-                    <div id="quiz-text" class="quiz-question-text">
-                        ここに問題文が表示されます。
-                    </div>
-
-                    <div id="quiz-options" class="quiz-options-grid">
-                        <div class="quiz-option" id="opt-0">A. 選択肢1</div>
-                        <div class="quiz-option" id="opt-1">B. 選択肢2</div>
-                        <div class="quiz-option" id="opt-2">C. 選択肢3</div>
-                        <div class="quiz-option" id="opt-3">D. 選択肢4</div>
-                    </div>
-                </div>
-
-                <!-- 右カラム：回答入力・ボタン -->
-                <div class="quiz-right-col">
-                    <!-- 回答入力エリア -->
-                    <div class="answer-panel">
-                        <h3>▼ 参加者の回答入力 (司会者用)</h3>
-                        <div id="answer-rows-container">
-                            <!-- JSで参加者分の行を生成 -->
-                        </div>
-                        
-                        <!-- コントロールボタンをここに移動 -->
-                        <div class="quiz-controls">
-                            <button id="btn-prev" class="control-btn btn-prev" onclick="prevQuestion()" style="display:none;">前へ</button>
-                            <button id="btn-answer" class="control-btn btn-show" onclick="showAnswer()">正解を表示</button>
-                            <button id="btn-next" class="control-btn btn-next" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 終了メッセージ -->
-        <div id="quiz-end" style="display:none; text-align:center; padding:50px;">
-            <h3 style="font-size:2rem; color:var(--accent-color);">クイズ終了！</h3>
-            <p>お疲れ様でした！</p>
-        </div>
-
-    </div>
-
-    <!-- 箱の中身セクション -->
-    <div id="box" class="content-section">
-        <h2 class="box-title">箱の中身はなんだろな？ - 恐怖のブラックボックス</h2>
-        <ul>
-            <li>問題が2問あり、二手に分かれて参加してもらいます。</li>
-        </ul>
-
-        <div class="group-box">
-            <span class="group-title">▼ 1問目</span>
-            <div class="group-members">RENちゃん、安達さん、さとし</div>
-        </div>
-
-        <div class="group-box">
-            <span class="group-title">▼ 2問目</span>
-            <div class="group-members">おったん、小田ちゃん、としくん、ようちゃん</div>
-        </div>
-
-        <ul>
-            <li>ヤジ大歓迎ですが、見てる方は正解を言わないようにｗ</li>
-            <li>一人ずつ箱に手を入れて確認します：<strong style="color:var(--box-color);">制限時間10秒</strong></li>
-            <li>グループ全員が確認したら画用紙にペンで回答を書きます</li>
-            <li><span style="color:#e74c3c; font-weight:bold;">注意：個人戦なので回答時に相談しないようにしてください</span></li>
-            <li>一斉に回答オープン！</li>
-        </ul>
-
-        <div class="point-rule" style="text-align: left; display: inline-block; width: 100%; box-sizing: border-box;">
-            <div style="display:flex; justify-content: space-around;">
-                <div style="text-align:center;">ドンピシャ<br><span>3点獲得</span></div>
-                <div style="text-align:center;">おしい！<br><span>1点獲得</span></div>
-                <div style="text-align:center;">不正解<br><span style="color:#888;">0点</span></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- リアルタイム集計パネル -->
-<div class="scoreboard-panel" id="scoreboardPanel">
-    <!-- リサイズハンドル -->
-    <div class="resize-handle" id="resizeHandle"></div>
+    // Global State
+    let currentUser = null; // { id, name }
     
-    <!-- スクロールエリア -->
-    <div class="scoreboard-content">
-        <div class="scoreboard-header">
-            <span class="dot-font">REALTIME SCOREBOARD</span>
-            <button class="reset-all-btn" onclick="resetAllScores()">Reset All</button>
-        </div>
-        
-        <div class="players-grid" id="playersGrid">
-            <!-- JSでプレイヤーカードを生成 -->
-        </div>
-    </div>
-</div>
-
-<!-- リセット確認モーダル -->
-<div id="resetModal" class="modal-overlay">
-    <div class="modal-content">
-        <p>【確認】<br>本当に全員のスコアを<br>0にリセットしますか？</p>
-        <div class="modal-buttons">
-            <button class="modal-btn cancel" onclick="closeResetModal()">キャンセル</button>
-            <button class="modal-btn confirm" onclick="executeReset()">リセットする</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    /* =========================================
-       簡易ログイン機能
-       ========================================= */
-    function checkLogin() {
-        const id = document.getElementById('login-id').value;
-        const pass = document.getElementById('login-pass').value;
-        const errorMsg = document.getElementById('login-error');
-        
-        // パスワード判定 (teamb / musyokutensei12manmaketa)
-        if (id === 'teamb' && pass === 'musyokutensei12manmaketa') {
-            document.getElementById('login-overlay').style.display = 'none';
-        } else {
-            errorMsg.style.display = 'block';
-            // 揺れるアニメーション
-            const box = document.querySelector('.login-box');
-            box.style.transform = 'translateX(10px)';
-            setTimeout(() => box.style.transform = 'translateX(-10px)', 50);
-            setTimeout(() => box.style.transform = 'translateX(10px)', 100);
-            setTimeout(() => box.style.transform = 'translateX(0)', 150);
-        }
-    }
-
-    // Enterキーでもログイン可能にする
-    function handleLoginKey(e) {
-        if (e.key === 'Enter') checkLogin();
-    }
-
-    /* =========================================
-       データ定義
-       ========================================= */
-    // 参加者リスト
-    const players = [
-        "小田ちゃん", 
-        "RENちゃん", 
-        "安達さん", 
-        "さとし", 
-        "おったん", 
-        "としくん", 
-        "ようちゃん"
-    ];
-
-    // クイズデータ
+    // --- Quiz Data ---
     const quizData = [
-        // 赤岡先生 (Q1, Q2)
         {
             presenter: "赤岡先生からの出題",
             question: "第1問：今年、赤岡先生がこっそり始めた趣味はどれでしょう？",
             options: ["A. ソロキャンプ", "B. バイオリン", "C. ポケモンカード", "D. 筋トレ"],
             answerIndex: 0, 
             mediaType: "image", 
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q1+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q1+Answer" 
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q1+Image"
         },
         {
             presenter: "赤岡先生からの出題",
@@ -874,18 +265,15 @@
             options: ["A. ドラム式洗濯機", "B. 高級腕時計", "C. 車の修理代", "D. 仮想通貨"],
             answerIndex: 2,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q2+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q2+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q2+Image"
         },
-        // もっつ (Q3, Q4)
         {
             presenter: "もっつからの出題",
             question: "第3問：もっつが最近ハマっているコンビニスイーツは？",
             options: ["A. ファミマのフラッペ", "B. ローソンのバスチー", "C. セブンのカヌレ", "D. ミニストップのソフト"],
             answerIndex: 1,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q3+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q3+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q3+Image"
         },
         {
             presenter: "もっつからの出題",
@@ -893,18 +281,15 @@
             options: ["A. 北海道", "B. 沖縄", "C. 台湾", "D. 近所のスーパー銭湯"],
             answerIndex: 0,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q4+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q4+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q4+Image"
         },
-        // 西川 (Q5, Q6)
         {
             presenter: "西川からの出題",
             question: "第5問：西川が最近やらかした最大の失敗は？",
             options: ["A. 財布を落とした", "B. 会議で寝た", "C. 終電を逃して歩いて帰宅", "D. 料理でボヤ騒ぎ"],
             answerIndex: 2,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q5+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q5+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q5+Image"
         },
         {
             presenter: "西川からの出題",
@@ -912,18 +297,15 @@
             options: ["A. フルマラソン", "B. 英語学習", "C. 婚活", "D. YouTuberデビュー"],
             answerIndex: 0,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q6+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q6+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q6+Image"
         },
-        // 祐三さん (Q7, Q8)
         {
             presenter: "祐三さんからの出題",
             question: "第7問：祐三さんが今年一番食べたラーメンの回数は？",
             options: ["A. 50回", "B. 100回", "C. 150回", "D. 365回"],
             answerIndex: 1,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q7+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q7+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q7+Image"
         },
         {
             presenter: "祐三さんからの出題",
@@ -931,18 +313,15 @@
             options: ["A. 飼い猫", "B. 愛車", "C. 初期設定のまま", "D. 好きなアイドル"],
             answerIndex: 3,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q8+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q8+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q8+Image"
         },
-        // あべちゃん (Q9, Q10)
         {
             presenter: "あべちゃんからの出題",
             question: "第9問：あべちゃんが今年一番感動した映画は？",
             options: ["A. ゴジラ-1.0", "B. 君たちはどう生きるか", "C. トップガン(家で見た)", "D. アンパンマン"],
             answerIndex: 0,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q9+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q9+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q9+Image"
         },
         {
             presenter: "あべちゃんからの出題",
@@ -950,375 +329,486 @@
             options: ["A. お金貸して", "B. 愛してるぜ", "C. 健康第一", "D. 飲みに行こう"],
             answerIndex: 2,
             mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q10+Image",
-            answerMediaSrc: "https://placehold.co/600x400/1e1e1e/e74c3c?text=Q10+Answer"
+            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q10+Image"
         }
     ];
-
-    /* =========================================
-       状態管理
-       ========================================= */
-    let currentQuizIndex = 0;
-    let scores = {};
-    // クイズ回答の一時保存用 { "小田ちゃん": 0, "RENちゃん": 2, ... } (0=A, 1=B...)
-    let currentRoundAnswers = {};
-    // 現在の問題でポイント加算済みかどうかのフラグ
-    let isPointsAdded = false;
-
-
-    /* =========================================
-       クイズ進行ロジック
-       ========================================= */
     
-    function renderQuiz() {
-        if (currentQuizIndex >= quizData.length) {
-            document.getElementById('quiz-display').style.display = 'none';
-            document.getElementById('quiz-end').style.display = 'block';
-            return;
-        }
+    // DOM Elements
+    const views = {
+        setup: document.getElementById('view-setup'),
+        host: document.getElementById('view-host'),
+        client: document.getElementById('view-client')
+    };
 
-        const data = quizData[currentQuizIndex];
-        
-        // 状態リセット
-        isPointsAdded = false;
-        currentRoundAnswers = {}; // 回答リセット
+    // --- Boot Sequence ---
+    window.addEventListener('load', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const role = urlParams.get('role');
 
-        // テキスト更新
-        document.getElementById('quiz-presenter').textContent = data.presenter;
-        document.getElementById('quiz-count').textContent = `Q.${currentQuizIndex + 1}`;
-        document.getElementById('quiz-text').textContent = data.question;
-
-        // メディア更新
-        const imgEl = document.getElementById('quiz-image');
-        const vidEl = document.getElementById('quiz-video');
-        const phEl = document.getElementById('quiz-media-placeholder');
-
-        imgEl.style.display = 'none';
-        vidEl.style.display = 'none';
-        phEl.style.display = 'none';
-
-        if (data.mediaType === 'image' && data.mediaSrc) {
-            imgEl.src = data.mediaSrc;
-            imgEl.style.display = 'block';
-        } else if (data.mediaType === 'video' && data.mediaSrc) {
-            vidEl.src = data.mediaSrc;
-            vidEl.style.display = 'block';
+        if (role === 'host') {
+            checkHostAuth();
+        } else if (role === 'client') {
+            showView('client');
+            initClient();
         } else {
-            phEl.style.display = 'block';
+            showView('setup');
         }
+    });
 
-        // 選択肢更新
-        for(let i=0; i<4; i++) {
-            const optEl = document.getElementById(`opt-${i}`);
-            optEl.textContent = data.options[i];
-            optEl.className = 'quiz-option'; // クラスリセット
-        }
-
-        // 回答入力パネルの生成
-        renderAnswerBoard();
-
-        // ボタンリセット
-        document.getElementById('btn-answer').style.display = 'inline-block';
-        document.getElementById('btn-next').style.display = 'none';
-        document.getElementById('btn-answer').textContent = "正解を表示";
-        document.getElementById('btn-answer').disabled = false;
-
-        // 戻るボタンの制御
-        document.getElementById('btn-prev').style.display = currentQuizIndex > 0 ? 'inline-block' : 'none';
+    function showView(name) {
+        Object.values(views).forEach(el => el.style.display = 'none');
+        views[name].style.display = 'block';
     }
 
-    // 回答入力パネルを描画する関数
-    function renderAnswerBoard() {
-        const container = document.getElementById('answer-rows-container');
-        container.innerHTML = '';
+    // --- Setup View Logic ---
+    window.startAsHost = () => {
+        const pass = prompt("Enter Host Password:");
+        if(pass === "musyokutensei12manmaketa") {
+            const newUrl = window.location.href.split('?')[0] + '?role=host';
+            window.location.href = newUrl;
+        } else {
+            alert("Wrong Password");
+        }
+    };
+    
+    window.startAsClient = () => {
+        const newUrl = window.location.href.split('?')[0] + '?role=client';
+        window.location.href = newUrl;
+    };
 
-        players.forEach((player, pIndex) => {
-            const row = document.createElement('div');
-            row.className = 'answer-row';
-            
-            // 名前
-            const nameEl = document.createElement('div');
-            nameEl.className = 'answer-player-name';
-            nameEl.textContent = player;
-            row.appendChild(nameEl);
+    // --- Host Logic ---
+    async function initHost() {
+        showView('host');
+        
+        // QR Code Generation
+        const clientUrl = window.location.href.split('?')[0] + '?role=client';
+        new QRious({
+            element: document.getElementById('qrcode'),
+            value: clientUrl,
+            size: 200
+        });
+        document.getElementById('join-url').textContent = clientUrl;
 
-            // ボタン群
-            const btnsEl = document.createElement('div');
-            btnsEl.className = 'answer-btns';
-            
-            const options = ['A', 'B', 'C', 'D'];
-            options.forEach((opt, optIndex) => {
-                const btn = document.createElement('div');
-                btn.className = 'ans-btn';
-                btn.textContent = opt;
-                btn.id = `ans-${pIndex}-${optIndex}`;
-                btn.onclick = () => selectAnswer(player, optIndex, pIndex);
-                btnsEl.appendChild(btn);
-            });
+        // Reset Game State
+        await setDoc(doc(db, "bonenkai_2025", "gameState"), {
+            phase: 'entry', // entry, quiz, result
+            currentQIndex: 0,
+            status: 'open' // open, closed
+        });
 
-            row.appendChild(btnsEl);
-            
-            // 判定結果表示用
-            const resultEl = document.createElement('div');
-            resultEl.className = 'result-mark';
-            resultEl.id = `result-${pIndex}`;
-            row.appendChild(resultEl);
+        // Listen to Players
+        onSnapshot(collection(db, "bonenkai_2025_players"), (snapshot) => {
+            renderHostScoreboard(snapshot.docs);
+            renderHostStatusPanel(snapshot.docs);
+        });
 
-            container.appendChild(row);
+        // Listen to GameState
+        onSnapshot(doc(db, "bonenkai_2025", "gameState"), (docSnap) => {
+            const state = docSnap.data();
+            updateHostUI(state);
         });
     }
 
-    // 回答選択時の処理
-    function selectAnswer(player, optIndex, pIndex) {
-        if (isPointsAdded) return; // 正解表示後は変更不可
-
-        // データ保存
-        currentRoundAnswers[player] = optIndex;
-
-        // UI更新（その人の他の選択を解除し、これをハイライト）
-        for(let i=0; i<4; i++) {
-            const btn = document.getElementById(`ans-${pIndex}-${i}`);
-            if (i === optIndex) {
-                btn.classList.add('selected');
-            } else {
-                btn.classList.remove('selected');
-            }
-        }
+    function checkHostAuth() {
+        initHost();
     }
 
-    // 正解表示＆採点処理
-    function showAnswer() {
-        const data = quizData[currentQuizIndex];
-        const correctIndex = data.answerIndex;
+    // Host Actions
+    window.hostStartQuiz = async () => {
+        await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+            phase: 'quiz',
+            currentQIndex: 0,
+            status: 'open'
+        });
+        document.getElementById('qr-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+    };
+
+    window.hostNextQ = async () => {
+        const stateRef = doc(db, "bonenkai_2025", "gameState");
+        const currentIdx = parseInt(document.getElementById('q-count').dataset.index || 0);
         
-        // --- メイン画面の正解強調 ---
-        for(let i=0; i<4; i++) {
-            const optEl = document.getElementById(`opt-${i}`);
-            if (i === correctIndex) {
-                optEl.classList.add('correct-answer');
-            } else {
-                optEl.classList.add('fade-out');
+        // Reset all players' answers
+        const playersSnap = await getDocs(collection(db, "bonenkai_2025_players"));
+        const batch = writeBatch(db);
+        playersSnap.forEach(p => {
+            batch.update(doc(db, "bonenkai_2025_players", p.id), { currentAnswer: null });
+        });
+        await batch.commit();
+
+        await updateDoc(stateRef, {
+            currentQIndex: currentIdx + 1,
+            status: 'open'
+        });
+    };
+
+    window.hostShowAnswer = async () => {
+        const currentIdx = parseInt(document.getElementById('q-count').dataset.index || 0);
+        const data = quizData[currentIdx];
+        
+        // Lock game
+        await updateDoc(doc(db, "bonenkai_2025", "gameState"), { status: 'closed' });
+
+        // Calculate Scores
+        const playersSnap = await getDocs(collection(db, "bonenkai_2025_players"));
+        const batch = writeBatch(db);
+        
+        playersSnap.forEach(p => {
+            const pData = p.data();
+            if (pData.currentAnswer === data.answerIndex) {
+                const pRef = doc(db, "bonenkai_2025_players", p.id);
+                batch.update(pRef, { 
+                    score: increment(1) 
+                });
             }
-        }
+        });
+        await batch.commit();
+        
+        highlightCorrectOption(data.answerIndex);
+        
+        document.getElementById('btn-show').classList.add('hidden');
+        document.getElementById('btn-next').classList.remove('hidden');
+    };
 
-        // --- メディア切り替え ---
-        if (data.answerMediaSrc) {
-             const imgEl = document.getElementById('quiz-image');
-             if(data.mediaType === 'image') {
-                 imgEl.src = data.answerMediaSrc;
-             }
-        }
+    // 手動スコア調整（Host下部のボタン）
+    window.manualScore = async (id, delta) => {
+        const pRef = doc(db, "bonenkai_2025_players", id);
+        await updateDoc(pRef, {
+            score: increment(delta)
+        });
+    };
 
-        // --- 自動採点とポイント加算 ---
-        if (!isPointsAdded) {
-            players.forEach((player, pIndex) => {
-                const selected = currentRoundAnswers[player];
-                const resultMark = document.getElementById(`result-${pIndex}`);
-
-                // 選択されているボタンのスタイルを変更
-                if (selected !== undefined) {
-                    const btn = document.getElementById(`ans-${pIndex}-${selected}`);
-                    if (selected === correctIndex) {
-                        // 正解！
-                        btn.classList.add('result-correct');
-                        resultMark.textContent = "⭕️";
-                        resultMark.style.color = "#e74c3c";
-                        // ポイント加算
-                        updateScore(player, 1);
-                    } else {
-                        // 不正解
-                        btn.classList.add('result-wrong');
-                        resultMark.textContent = "❌";
-                        resultMark.style.color = "#555";
-                    }
-                } else {
-                    // 未回答
-                     resultMark.textContent = "ー";
-                     resultMark.style.color = "#555";
-                }
+    window.resetGame = async () => {
+        if(confirm("本当にリセットしますか？参加者もスコアも全て消えます。")) {
+            // ゲーム状態リセット
+            await setDoc(doc(db, "bonenkai_2025", "gameState"), {
+                phase: 'entry',
+                currentQIndex: 0,
+                status: 'open'
             });
-            isPointsAdded = true;
+            // プレイヤー全削除
+            const playersSnap = await getDocs(collection(db, "bonenkai_2025_players"));
+            const batch = writeBatch(db);
+            playersSnap.forEach(p => {
+                batch.delete(doc(db, "bonenkai_2025_players", p.id));
+            });
+            await batch.commit();
+            location.reload();
+        }
+    };
+
+    // Host UI Renderers
+    function updateHostUI(state) {
+        if (!state) return;
+
+        if (state.phase === 'entry') {
+            document.getElementById('qr-section').classList.remove('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            return;
         }
 
-        // ボタン切り替え
-        document.getElementById('btn-answer').style.display = 'none';
-        document.getElementById('btn-next').style.display = 'inline-block';
-    }
+        const data = quizData[state.currentQIndex];
+        if (!data) return; 
 
-    function nextQuestion() {
-        currentQuizIndex++;
-        renderQuiz();
-    }
-
-    function prevQuestion() {
-        if (currentQuizIndex > 0) {
-            currentQuizIndex--;
-            renderQuiz();
+        document.getElementById('q-count').textContent = `Q.${state.currentQIndex + 1}`;
+        document.getElementById('q-count').dataset.index = state.currentQIndex;
+        document.getElementById('q-presenter').textContent = data.presenter;
+        document.getElementById('q-text').textContent = data.question;
+        
+        for(let i=0; i<4; i++) {
+            const el = document.getElementById(`opt-${i}`);
+            el.textContent = data.options[i];
+            el.classList.remove('correct', 'fade');
         }
-    }
 
-
-    /* =========================================
-       得点管理・共通処理
-       ========================================= */
-    // 初期化処理
-    function init() {
-        const savedScores = localStorage.getItem('bonenkai_teamB_scores');
-        if (savedScores) {
-            scores = JSON.parse(savedScores);
+        const imgEl = document.getElementById('q-image');
+        const phEl = document.getElementById('q-placeholder');
+        if (data.mediaType === 'image') {
+            imgEl.src = data.mediaSrc;
+            imgEl.classList.remove('hidden');
+            phEl.classList.add('hidden');
         } else {
-            players.forEach(p => scores[p] = 0);
+            imgEl.classList.add('hidden');
+            phEl.classList.remove('hidden');
         }
-        renderScoreboard();
-        
-        // クイズ初期表示
-        renderQuiz();
-        
-        // スコアボードのリサイズ初期化
-        initResizeHandle();
+
+        if (state.status === 'open') {
+            document.getElementById('btn-show').classList.remove('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
+        }
     }
 
-    // スコアボード描画
-    function renderScoreboard() {
-        const grid = document.getElementById('playersGrid');
-        grid.innerHTML = '';
+    function renderHostStatusPanel(docs) {
+        const container = document.getElementById('status-list');
+        container.innerHTML = '';
+        docs.forEach(d => {
+            const p = d.data();
+            const div = document.createElement('div');
+            div.className = 'status-row';
+            const hasAnswered = p.currentAnswer !== null && p.currentAnswer !== undefined;
+            div.innerHTML = `
+                <span class="status-name">${p.name}</span>
+                <span class="status-mark ${hasAnswered ? 'status-answered' : ''}">
+                    ${hasAnswered ? '●' : '・'}
+                </span>
+            `;
+            container.appendChild(div);
+        });
+    }
 
-        players.forEach(player => {
-            const currentScore = scores[player] || 0;
-            
-            const card = document.createElement('div');
-            card.className = 'player-card';
-            card.innerHTML = `
-                <div class="player-name">${player}</div>
-                <div class="score-display score-num" id="score-${player}">${currentScore}</div>
-                <div class="btn-group">
-                    <button class="btn-point btn-add-1" onclick="updateScore('${player}', 1)">+1</button>
-                    <button class="btn-point btn-add-3" onclick="updateScore('${player}', 3)">+3</button>
-                    <button class="btn-point btn-minus" onclick="updateScore('${player}', -1)">-1</button>
+    function renderHostScoreboard(docs) {
+        const container = document.getElementById('players-scroll');
+        const sorted = docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => b.score - a.score);
+        
+        container.innerHTML = '';
+        sorted.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'p-card';
+            div.innerHTML = `
+                <div class="p-name">${p.name}</div>
+                <div class="p-score">${p.score}</div>
+                <div class="score-ctrls">
+                    <button class="mini-btn" onclick="manualScore('${p.id}', 1)">+1</button>
+                    <button class="mini-btn" onclick="manualScore('${p.id}', 3)">+3</button>
+                    <button class="mini-btn" onclick="manualScore('${p.id}', -1)">-1</button>
                 </div>
             `;
-            grid.appendChild(card);
+            container.appendChild(div);
         });
     }
 
-    // スコア更新処理
-    function updateScore(player, delta) {
-        if (scores[player] === undefined) scores[player] = 0;
-        scores[player] += delta;
-        if (scores[player] < 0) scores[player] = 0; // マイナスにはしない
-
-        // 画面更新
-        const scoreEl = document.getElementById(`score-${player}`);
-        if(scoreEl) {
-            scoreEl.innerText = scores[player];
-            scoreEl.style.color = '#fff';
-            scoreEl.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                scoreEl.style.color = 'var(--accent-color)';
-                scoreEl.style.transform = 'scale(1)';
-            }, 200);
+    // --- Client Logic ---
+    function initClient() {
+        const savedId = localStorage.getItem('bonenkai_pid');
+        if (savedId) {
+            document.getElementById('login-area').classList.add('hidden');
+            document.getElementById('client-main').classList.remove('hidden');
+            currentUser = { id: savedId };
+            startClientListeners();
         }
-
-        saveScores();
     }
 
-    // 全リセット（モーダル表示）
-    function resetAllScores() {
-        document.getElementById('resetModal').classList.add('active');
+    window.clientJoin = async () => {
+        const name = document.getElementById('input-name').value;
+        if (!name) return alert("名前を入れてね！");
+
+        const docRef = await addDoc(collection(db, "bonenkai_2025_players"), {
+            name: name,
+            score: 0,
+            currentAnswer: null
+        });
+        
+        localStorage.setItem('bonenkai_pid', docRef.id);
+        currentUser = { id: docRef.id, name: name };
+        
+        document.getElementById('login-area').classList.add('hidden');
+        document.getElementById('client-main').classList.remove('hidden');
+        startClientListeners();
+    };
+
+    function startClientListeners() {
+        onSnapshot(doc(db, "bonenkai_2025", "gameState"), (snap) => {
+            if(snap.exists()) {
+                const state = snap.data();
+                updateClientUI(state);
+            }
+        });
     }
 
-    function closeResetModal() {
-        document.getElementById('resetModal').classList.remove('active');
-    }
+    function updateClientUI(state) {
+        const waitingArea = document.getElementById('client-waiting');
+        const quizArea = document.getElementById('client-quiz');
+        const statusText = document.getElementById('client-status');
+        const resultPopup = document.getElementById('client-result');
 
-    function executeReset() {
-        players.forEach(p => scores[p] = 0);
-        renderScoreboard();
-        saveScores();
-        closeResetModal();
-    }
+        resultPopup.classList.add('hidden'); 
 
-    function saveScores() {
-        localStorage.setItem('bonenkai_teamB_scores', JSON.stringify(scores));
-    }
-
-    // タブ切り替え
-    function switchTab(tabId) {
-        const quizTabBtn = document.querySelector('button[onclick="switchTab(\'quiz\')"]');
-        const isQuizActive = quizTabBtn.classList.contains('active');
-
-        // クイズタブ再押下でリセット
-        if (tabId === 'quiz' && isQuizActive) {
-            currentQuizIndex = 0;
-            document.getElementById('quiz-end').style.display = 'none';
-            document.getElementById('quiz-display').style.display = 'block';
-            renderQuiz();
+        if (state.phase === 'entry') {
+            waitingArea.classList.remove('hidden');
+            quizArea.classList.add('hidden');
+            statusText.textContent = "開始待ちです...";
             return;
         }
 
-        document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
+        waitingArea.classList.add('hidden');
+        quizArea.classList.remove('hidden');
 
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if (tabId === 'quiz') {
-            quizTabBtn.classList.add('active');
+        const btns = document.querySelectorAll('.ans-btn-client');
+        if (state.status === 'closed') {
+            btns.forEach(b => b.disabled = true);
+            statusText.textContent = "回答締め切り！画面を見てね";
         } else {
-            document.querySelector('button[onclick="switchTab(\'box\')"]').classList.add('active');
+            btns.forEach(b => {
+                b.disabled = false;
+                b.classList.remove('selected');
+            });
+            statusText.textContent = `Q.${state.currentQIndex + 1} 回答を選択してね`;
         }
     }
 
-    /* =========================================
-       スコアボードのリサイズ機能
-       ========================================= */
-    function initResizeHandle() {
-        const panel = document.getElementById('scoreboardPanel');
-        const handle = document.getElementById('resizeHandle');
-        let isResizing = false;
-        let startY, startHeight;
-
-        handle.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            startY = e.clientY;
-            startHeight = parseInt(window.getComputedStyle(panel).height, 10);
-            
-            document.addEventListener('mousemove', doDrag);
-            document.addEventListener('mouseup', stopDrag);
-            e.preventDefault();
+    window.clientSubmit = async (index) => {
+        document.querySelectorAll('.ans-btn-client').forEach((b, i) => {
+            if (i === index) b.classList.add('selected');
+            else b.classList.remove('selected');
         });
 
-        handle.addEventListener('touchstart', (e) => {
-            isResizing = true;
-            startY = e.touches[0].clientY;
-            startHeight = parseInt(window.getComputedStyle(panel).height, 10);
-            
-            document.addEventListener('touchmove', doDrag);
-            document.addEventListener('touchend', stopDrag);
-        }, {passive: false});
+        await updateDoc(doc(db, "bonenkai_2025_players", currentUser.id), {
+            currentAnswer: index
+        });
+    };
 
-        function doDrag(e) {
-            if (!isResizing) return;
-            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-            const delta = startY - clientY;
-            const newHeight = startHeight + delta;
-
-            if (newHeight > 100 && newHeight < window.innerHeight - 50) {
-                panel.style.height = `${newHeight}px`;
-            }
-            if(e.type.includes('touch')) e.preventDefault(); 
-        }
-
-        function stopDrag() {
-            isResizing = false;
-            document.removeEventListener('mousemove', doDrag);
-            document.removeEventListener('mouseup', stopDrag);
-            document.removeEventListener('touchmove', doDrag);
-            document.removeEventListener('touchend', stopDrag);
+    // --- Helpers ---
+    function highlightCorrectOption(idx) {
+        for(let i=0; i<4; i++) {
+            const el = document.getElementById(`opt-${i}`);
+            if (i === idx) el.classList.add('correct');
+            else el.classList.add('fade');
         }
     }
+</script>
 
-    // 実行
-    init();
+<!-- UI Structure -->
 
+<!-- SETUP SCREEN -->
+<div id="view-setup">
+    <div class="setup-box">
+        <h1 style="color:var(--accent-color)">役割選択</h1>
+        <p>このデバイスはどちらで使用しますか？</p>
+        <button class="mode-btn btn-host" onclick="startAsHost()">親機 (スクリーン)</button>
+        <button class="mode-btn btn-client" onclick="startAsClient()">子機 (参加者)</button>
+    </div>
+</div>
+
+<!-- HOST SCREEN -->
+<div id="view-host">
+    <div class="container">
+        <header class="host-header">
+            <h1>企画チームB 出し物 (親機)</h1>
+        </header>
+
+        <!-- QR Entry Phase -->
+        <div id="qr-section">
+            <h2>参加用QRコード</h2>
+            <canvas id="qrcode"></canvas>
+            <p class="join-url" id="join-url"></p>
+            <p>スマホで読み込んで名前を入力してね！</p>
+            <button class="ctrl-btn btn-start" onclick="hostStartQuiz()">クイズ開始！</button>
+        </div>
+
+        <!-- Quiz Phase -->
+        <div id="quiz-section" class="hidden">
+            <div class="quiz-layout">
+                <div class="quiz-left">
+                    <div class="quiz-meta">
+                        <span id="q-presenter" class="reg-font" style="color:var(--accent-color); font-size:1.5rem;"></span>
+                        <span id="q-count" class="reg-font" style="color:var(--quiz-color); font-size:2rem;"></span>
+                    </div>
+                    
+                    <div class="media-box">
+                        <img id="q-image" src="" class="hidden">
+                        <div id="q-placeholder" style="color:#666;">(NO IMAGE)</div>
+                    </div>
+
+                    <div id="q-text" class="question-text"></div>
+
+                    <div class="options-grid">
+                        <div class="option-card" id="opt-0"></div>
+                        <div class="option-card" id="opt-1"></div>
+                        <div class="option-card" id="opt-2"></div>
+                        <div class="option-card" id="opt-3"></div>
+                    </div>
+                </div>
+
+                <!-- Status Panel (Right) -->
+                <div class="quiz-right">
+                    <h3 style="color:#888; border-bottom:1px solid #444; padding-bottom:5px;">回答状況</h3>
+                    <div class="status-panel" id="status-list">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoreboard (Fixed Bottom) -->
+        <div class="host-scoreboard" id="host-scoreboard">
+            <div class="resize-handle"><div class="resize-bar"></div></div>
+            <div class="players-scroll" id="players-scroll">
+                <!-- Dynamic Player Cards -->
+            </div>
+        </div>
+
+        <!-- Controls (Fixed Bottom Overlay) -->
+        <div class="control-bar" id="ctrl-bar">
+            <button id="btn-show" class="ctrl-btn btn-show hidden" onclick="hostShowAnswer()">正解を表示</button>
+            <button id="btn-next" class="ctrl-btn btn-next hidden" onclick="hostNextQ()">次の問題へ</button>
+            <button class="ctrl-btn btn-reset" onclick="resetGame()">RESET</button>
+        </div>
+    </div>
+</div>
+
+<!-- CLIENT SCREEN -->
+<div id="view-client">
+    <div class="client-container">
+        <h1 class="reg-font" style="color:var(--accent-color);">参加画面</h1>
+
+        <!-- Login -->
+        <div id="login-area" class="name-input-area">
+            <p>名前を入力してください</p>
+            <input type="text" id="input-name" class="name-input" placeholder="例: たかし">
+            <button class="mode-btn btn-client" onclick="clientJoin()">参加する！</button>
+        </div>
+
+        <!-- Waiting / Game -->
+        <div id="client-main" class="hidden">
+            <h2 id="client-status" style="margin-bottom:30px;"></h2>
+            
+            <div id="client-waiting" class="waiting-area">
+                <div class="spinner"></div>
+                <p>親機が開始するのを待っています...</p>
+            </div>
+
+            <div id="client-quiz" class="client-quiz-area hidden">
+                <button class="ans-btn-client" onclick="clientSubmit(0)">A</button>
+                <button class="ans-btn-client" onclick="clientSubmit(1)">B</button>
+                <button class="ans-btn-client" onclick="clientSubmit(2)">C</button>
+                <button class="ans-btn-client" onclick="clientSubmit(3)">D</button>
+            </div>
+            
+            <div id="client-result" class="result-popup hidden">
+                <div class="result-text win">⭕️ 正解！</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Scoreboard Resize Logic
+    const handle = document.querySelector('.resize-handle');
+    const board = document.getElementById('host-scoreboard');
+    let startY, startH;
+    
+    handle.addEventListener('mousedown', initDrag);
+    handle.addEventListener('touchstart', initDrag);
+
+    function initDrag(e) {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        startH = parseInt(window.getComputedStyle(board).height);
+        document.addEventListener('mousemove', doDrag);
+        document.addEventListener('touchmove', doDrag);
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+    }
+
+    function doDrag(e) {
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const newH = startH + (startY - y);
+        if(newH > 100 && newH < 600) board.style.height = newH + 'px';
+    }
+
+    function stopDrag() {
+        document.removeEventListener('mousemove', doDrag);
+        document.removeEventListener('touchmove', doDrag);
+    }
 </script>
 
 </body>
