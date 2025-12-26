@@ -18,6 +18,7 @@
             --accent-color: #d4af37;
             --quiz-color: #3498db;
             --correct-color: #e74c3c;
+            --box-color: #e67e22; /* ブラックボックス用 */
             --card-bg: #1e1e1e;
         }
 
@@ -93,6 +94,17 @@
         .quiz-left { flex: 2; }
         .quiz-right { flex: 1; min-width: 300px; }
 
+        /* ブラックボックスエリア */
+        #blackbox-section {
+            text-align: center;
+            padding: 40px;
+            border: 2px solid var(--box-color);
+            border-radius: 15px;
+            background: rgba(230, 126, 34, 0.1);
+        }
+        .bb-title { color: var(--box-color); font-size: 3rem; margin-bottom: 20px; }
+        .bb-desc { font-size: 1.5rem; line-height: 2; }
+
         /* メディア・問題 */
         .media-box {
             width: 100%; height: 350px; background: #000;
@@ -123,7 +135,9 @@
             padding: 10px; border-bottom: 1px solid #444;
         }
         .status-name { font-weight: bold; font-size: 1.2rem; }
-        .status-mark { font-size: 1.5rem; width: 40px; text-align: center; }
+        .status-mark { 
+            font-size: 1.5rem; width: 40px; text-align: center; font-weight: bold; font-family: 'Reggae One';
+        }
         .status-answered { color: var(--quiz-color); } /* 回答済み */
         
         /* コントロールバー */
@@ -136,6 +150,7 @@
             padding: 10px 30px; font-size: 1.2rem; border-radius: 30px; border: none;
             cursor: pointer; font-family: 'Reggae One', serif; min-width: 150px;
         }
+        .btn-prev { background: #555; color: #fff; min-width: 100px; } /* 戻るボタン */
         .btn-next { background: var(--accent-color); color: #000; }
         .btn-show { background: var(--quiz-color); color: #fff; }
         .btn-start { background: #e74c3c; color: #fff; font-size: 1.5rem; padding: 15px 50px; }
@@ -176,6 +191,12 @@
             background: var(--quiz-color); border-color: #fff; transform: scale(1.05);
         }
         .ans-btn-client:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* クライアント用リセットボタン */
+        .client-reset-btn {
+            margin-top: 20px; background: transparent; border: 1px solid #555; color: #555;
+            padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
+        }
 
         /* 結果表示 */
         .result-popup {
@@ -248,6 +269,7 @@
 
     // Global State
     let currentUser = null; // { id, name }
+    let currentGameState = null; // ローカルでの状態追跡用
     
     // --- Quiz Data ---
     const quizData = [
@@ -389,13 +411,6 @@
         });
         document.getElementById('join-url').textContent = clientUrl;
 
-        // Reset Game State
-        await setDoc(doc(db, "bonenkai_2025", "gameState"), {
-            phase: 'entry', // entry, quiz, result
-            currentQIndex: 0,
-            status: 'open' // open, closed
-        });
-
         // Listen to Players
         onSnapshot(collection(db, "bonenkai_2025_players"), (snapshot) => {
             renderHostScoreboard(snapshot.docs);
@@ -404,8 +419,11 @@
 
         // Listen to GameState
         onSnapshot(doc(db, "bonenkai_2025", "gameState"), (docSnap) => {
-            const state = docSnap.data();
-            updateHostUI(state);
+            if (docSnap.exists()) {
+                const state = docSnap.data();
+                currentGameState = state; // グローバル変数に保持
+                updateHostUI(state);
+            }
         });
     }
 
@@ -415,35 +433,85 @@
 
     // Host Actions
     window.hostStartQuiz = async () => {
-        await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+        await setDoc(doc(db, "bonenkai_2025", "gameState"), {
             phase: 'quiz',
             currentQIndex: 0,
             status: 'open'
         });
-        document.getElementById('qr-section').classList.add('hidden');
-        document.getElementById('quiz-section').classList.remove('hidden');
+        // 最初の問題の回答をリセット
+        resetPlayersAnswer();
     };
 
     window.hostNextQ = async () => {
-        const stateRef = doc(db, "bonenkai_2025", "gameState");
-        const currentIdx = parseInt(document.getElementById('q-count').dataset.index || 0);
+        if (!currentGameState) return;
+        const nextIdx = currentGameState.currentQIndex + 1;
+
+        // 問題が終了したらブラックボックスへ
+        if (nextIdx >= quizData.length) {
+            await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+                phase: 'blackbox',
+                status: 'open'
+            });
+            return;
+        }
         
-        // Reset all players' answers
+        await resetPlayersAnswer();
+        await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+            phase: 'quiz',
+            currentQIndex: nextIdx,
+            status: 'open'
+        });
+    };
+
+    // 「戻る」ボタンの処理
+    window.hostPrevQ = async () => {
+        if (!currentGameState) return;
+        
+        // ブラックボックスから戻る場合
+        if (currentGameState.phase === 'blackbox') {
+            await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+                phase: 'quiz',
+                currentQIndex: quizData.length - 1, // 最後の問題(Q10)へ
+                status: 'open' // 再度回答可能にするか、closedのままにするかは運用次第だが、nav用としてopenにしておく
+            });
+            return;
+        }
+
+        // 通常の問題遷移で戻る場合
+        const prevIdx = currentGameState.currentQIndex - 1;
+        
+        if (prevIdx < 0) {
+            // QRコード画面（待機画面）に戻る
+            if(confirm("QRコード（待機）画面に戻りますか？")) {
+                await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+                    phase: 'entry',
+                    currentQIndex: 0,
+                    status: 'open'
+                });
+            }
+            return;
+        }
+
+        await resetPlayersAnswer();
+        await updateDoc(doc(db, "bonenkai_2025", "gameState"), {
+            phase: 'quiz',
+            currentQIndex: prevIdx,
+            status: 'open'
+        });
+    };
+
+    async function resetPlayersAnswer() {
         const playersSnap = await getDocs(collection(db, "bonenkai_2025_players"));
         const batch = writeBatch(db);
         playersSnap.forEach(p => {
             batch.update(doc(db, "bonenkai_2025_players", p.id), { currentAnswer: null });
         });
         await batch.commit();
-
-        await updateDoc(stateRef, {
-            currentQIndex: currentIdx + 1,
-            status: 'open'
-        });
-    };
+    }
 
     window.hostShowAnswer = async () => {
-        const currentIdx = parseInt(document.getElementById('q-count').dataset.index || 0);
+        if (!currentGameState) return;
+        const currentIdx = currentGameState.currentQIndex;
         const data = quizData[currentIdx];
         
         // Lock game
@@ -464,10 +532,8 @@
         });
         await batch.commit();
         
+        // UI処理はonSnapshot側で行うが、即時反映のためここでも呼ぶとスムーズ
         highlightCorrectOption(data.answerIndex);
-        
-        document.getElementById('btn-show').classList.add('hidden');
-        document.getElementById('btn-next').classList.remove('hidden');
     };
 
     // 手動スコア調整（Host下部のボタン）
@@ -479,7 +545,7 @@
     };
 
     window.resetGame = async () => {
-        if(confirm("本当にリセットしますか？参加者もスコアも全て消えます。")) {
+        if(confirm("【危険】本当にリセットしますか？\n全員の参加データとスコアが消え、QRコード画面に戻ります。")) {
             // ゲーム状態リセット
             await setDoc(doc(db, "bonenkai_2025", "gameState"), {
                 phase: 'entry',
@@ -501,17 +567,39 @@
     function updateHostUI(state) {
         if (!state) return;
 
+        // フェーズ：エントリー
         if (state.phase === 'entry') {
             document.getElementById('qr-section').classList.remove('hidden');
             document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('blackbox-section').classList.add('hidden');
+            document.getElementById('btn-prev').classList.add('hidden');
+            document.getElementById('btn-show').classList.add('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
             return;
         }
+
+        // フェーズ：ブラックボックス
+        if (state.phase === 'blackbox') {
+            document.getElementById('qr-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('blackbox-section').classList.remove('hidden');
+            
+            // ボタン制御
+            document.getElementById('btn-prev').classList.remove('hidden');
+            document.getElementById('btn-show').classList.add('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
+            return;
+        }
+
+        // フェーズ：クイズ
+        document.getElementById('qr-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        document.getElementById('blackbox-section').classList.add('hidden');
 
         const data = quizData[state.currentQIndex];
         if (!data) return; 
 
         document.getElementById('q-count').textContent = `Q.${state.currentQIndex + 1}`;
-        document.getElementById('q-count').dataset.index = state.currentQIndex;
         document.getElementById('q-presenter').textContent = data.presenter;
         document.getElementById('q-text').textContent = data.question;
         
@@ -532,25 +620,39 @@
             phEl.classList.remove('hidden');
         }
 
+        // ボタン制御
+        document.getElementById('btn-prev').classList.remove('hidden');
         if (state.status === 'open') {
             document.getElementById('btn-show').classList.remove('hidden');
             document.getElementById('btn-next').classList.add('hidden');
+        } else {
+            document.getElementById('btn-show').classList.add('hidden');
+            document.getElementById('btn-next').classList.remove('hidden');
+            highlightCorrectOption(data.answerIndex); // 途中参加ホスト用
         }
     }
 
     function renderHostStatusPanel(docs) {
         const container = document.getElementById('status-list');
         container.innerHTML = '';
+        const answerMap = ['A', 'B', 'C', 'D'];
+        
         docs.forEach(d => {
             const p = d.data();
             const div = document.createElement('div');
             div.className = 'status-row';
-            const hasAnswered = p.currentAnswer !== null && p.currentAnswer !== undefined;
+            
+            // 回答状況：数字(0-3)を文字(A-D)に変換して表示
+            let mark = '・';
+            let answeredClass = '';
+            if (p.currentAnswer !== null && p.currentAnswer !== undefined) {
+                mark = answerMap[p.currentAnswer];
+                answeredClass = 'status-answered';
+            }
+
             div.innerHTML = `
                 <span class="status-name">${p.name}</span>
-                <span class="status-mark ${hasAnswered ? 'status-answered' : ''}">
-                    ${hasAnswered ? '●' : '・'}
-                </span>
+                <span class="status-mark ${answeredClass}">${mark}</span>
             `;
             container.appendChild(div);
         });
@@ -606,7 +708,25 @@
         startClientListeners();
     };
 
+    window.clientLogout = () => {
+        if(confirm("初期画面に戻りますか？")) {
+            localStorage.removeItem('bonenkai_pid');
+            location.reload();
+        }
+    };
+
     function startClientListeners() {
+        // 自分のデータが存在するか監視（親機リセット対策）
+        onSnapshot(doc(db, "bonenkai_2025_players", currentUser.id), (snap) => {
+            if (!snap.exists()) {
+                // 削除されていたら強制ログアウト
+                localStorage.removeItem('bonenkai_pid');
+                alert("ゲームがリセットされました。トップに戻ります。");
+                location.reload();
+            }
+        });
+
+        // ゲーム進行の監視
         onSnapshot(doc(db, "bonenkai_2025", "gameState"), (snap) => {
             if(snap.exists()) {
                 const state = snap.data();
@@ -618,20 +738,34 @@
     function updateClientUI(state) {
         const waitingArea = document.getElementById('client-waiting');
         const quizArea = document.getElementById('client-quiz');
+        const blackboxArea = document.getElementById('client-blackbox');
         const statusText = document.getElementById('client-status');
         const resultPopup = document.getElementById('client-result');
 
         resultPopup.classList.add('hidden'); 
 
+        // エントリー待機中
         if (state.phase === 'entry') {
             waitingArea.classList.remove('hidden');
             quizArea.classList.add('hidden');
+            blackboxArea.classList.add('hidden');
             statusText.textContent = "開始待ちです...";
             return;
         }
 
+        // ブラックボックス中
+        if (state.phase === 'blackbox') {
+            waitingArea.classList.add('hidden');
+            quizArea.classList.add('hidden');
+            blackboxArea.classList.remove('hidden');
+            statusText.textContent = "ブラックボックス";
+            return;
+        }
+
+        // クイズ中
         waitingArea.classList.add('hidden');
         quizArea.classList.remove('hidden');
+        blackboxArea.classList.add('hidden');
 
         const btns = document.querySelectorAll('.ans-btn-client');
         if (state.status === 'closed') {
@@ -729,6 +863,16 @@
             </div>
         </div>
 
+        <!-- Black Box Phase (New) -->
+        <div id="blackbox-section" class="hidden">
+            <h2 class="bb-title">箱の中身はなんだろな？</h2>
+            <div class="bb-desc">
+                <p>恐怖のブラックボックスタイム！</p>
+                <p>親機画面と実際の箱に注目してください。</p>
+                <p>得点集計は下のパネルで行います。</p>
+            </div>
+        </div>
+
         <!-- Scoreboard (Fixed Bottom) -->
         <div class="host-scoreboard" id="host-scoreboard">
             <div class="resize-handle"><div class="resize-bar"></div></div>
@@ -739,6 +883,7 @@
 
         <!-- Controls (Fixed Bottom Overlay) -->
         <div class="control-bar" id="ctrl-bar">
+            <button id="btn-prev" class="ctrl-btn btn-prev hidden" onclick="hostPrevQ()">← 前へ</button>
             <button id="btn-show" class="ctrl-btn btn-show hidden" onclick="hostShowAnswer()">正解を表示</button>
             <button id="btn-next" class="ctrl-btn btn-next hidden" onclick="hostNextQ()">次の問題へ</button>
             <button class="ctrl-btn btn-reset" onclick="resetGame()">RESET</button>
@@ -765,6 +910,7 @@
             <div id="client-waiting" class="waiting-area">
                 <div class="spinner"></div>
                 <p>親機が開始するのを待っています...</p>
+                <button class="client-reset-btn" onclick="clientLogout()">名前入力に戻る</button>
             </div>
 
             <div id="client-quiz" class="client-quiz-area hidden">
@@ -772,6 +918,11 @@
                 <button class="ans-btn-client" onclick="clientSubmit(1)">B</button>
                 <button class="ans-btn-client" onclick="clientSubmit(2)">C</button>
                 <button class="ans-btn-client" onclick="clientSubmit(3)">D</button>
+            </div>
+
+            <div id="client-blackbox" class="waiting-area hidden">
+                <h3 style="color:var(--box-color); font-size:2rem;">ブラックボックス<br>開催中！</h3>
+                <p>前方の画面と実演に注目してね！</p>
             </div>
             
             <div id="client-result" class="result-popup hidden">
