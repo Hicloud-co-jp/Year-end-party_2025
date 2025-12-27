@@ -30,12 +30,17 @@
             padding: 0;
             box-sizing: border-box;
             overscroll-behavior: none;
+            overflow-y: auto; /* スクロールを明示的に許可 */
         }
 
         /* 共通スタイル */
         h1, h2, h3, .reg-font { font-family: 'Reggae One', serif; }
         .dot-font { font-family: 'DotGothic16', sans-serif; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 10px 20px 300px 20px; /* 上部パディング削減、下部は固定要素用に確保 */
+        }
         .hidden { display: none !important; }
 
         /* --- 画面切り替え --- */
@@ -67,14 +72,19 @@
         .btn-host { background: var(--accent-color); color: #000; }
         .btn-client { background: var(--quiz-color); color: #fff; }
 
-        /* --- Host画面レイアウト --- */
+        /* --- Host画面レイアウト (コンパクト化) --- */
         .host-header {
             text-align: center;
             border-bottom: 2px solid var(--accent-color);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 15px; /* 削減 */
+            padding-bottom: 5px; /* 削減 */
         }
-        .host-header h1 { margin: 0; color: var(--accent-color); text-shadow: 0 0 10px rgba(212,175,55,0.5); }
+        .host-header h1 { 
+            margin: 0; 
+            color: var(--accent-color); 
+            text-shadow: 0 0 10px rgba(212,175,55,0.5); 
+            font-size: 2rem; /* 少し小さく */
+        }
         
         /* QRコードエリア */
         #qr-section {
@@ -90,65 +100,84 @@
         .join-url { font-size: 1.2rem; word-break: break-all; color: #555; }
 
         /* クイズエリア (2カラム) */
-        .quiz-layout { display: flex; gap: 30px; align-items: flex-start; }
+        .quiz-layout { display: flex; gap: 20px; align-items: flex-start; }
         .quiz-left { flex: 2; }
-        .quiz-right { flex: 1; min-width: 300px; }
+        .quiz-right { flex: 1; min-width: 250px; }
 
         /* ブラックボックスエリア (デザイン修正) */
         #blackbox-section {
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             border: 2px solid var(--box-color);
             border-radius: 15px;
             background: rgba(230, 126, 34, 0.05);
         }
-        .bb-title { color: var(--box-color); font-size: 2.5rem; margin: 0 0 20px 0; text-shadow: 0 0 10px rgba(230, 126, 34, 0.5); }
-        .bb-desc { font-size: 1.3rem; margin-bottom: 30px; }
+        .bb-title { color: var(--box-color); font-size: 2rem; margin: 0 0 15px 0; text-shadow: 0 0 10px rgba(230, 126, 34, 0.5); }
+        .bb-desc { font-size: 1.1rem; margin-bottom: 20px; }
         
         .bb-groups {
-            display: flex; gap: 20px; justify-content: center; margin-bottom: 30px;
+            display: flex; gap: 20px; justify-content: center; margin-bottom: 20px;
         }
         .bb-group {
             flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--box-color);
-            border-radius: 10px; padding: 15px;
+            border-radius: 10px; padding: 10px;
         }
-        .bb-group h3 { color: var(--box-color); margin: 0 0 10px 0; font-size: 1.5rem; border-bottom: 1px solid #555; padding-bottom: 5px; }
-        .bb-group p { font-size: 1.3rem; font-weight: bold; margin: 0; line-height: 1.5; }
+        .bb-group h3 { color: var(--box-color); margin: 0 0 5px 0; font-size: 1.3rem; border-bottom: 1px solid #555; padding-bottom: 5px; }
+        .bb-group p { font-size: 1.1rem; font-weight: bold; margin: 0; line-height: 1.4; }
 
         .bb-rules {
-            text-align: left; display: inline-block; font-size: 1.2rem; line-height: 1.8;
-            background: rgba(255,255,255,0.05); padding: 20px 40px; border-radius: 10px; margin-bottom: 20px;
+            text-align: left; display: inline-block; font-size: 1rem; line-height: 1.6;
+            background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 10px; margin-bottom: 15px;
         }
         .bb-rules li { margin-bottom: 5px; }
-        .highlight { color: var(--box-color); font-weight: bold; font-size: 1.3em; }
+        .highlight { color: var(--box-color); font-weight: bold; font-size: 1.2em; }
         .warning { color: var(--correct-color); font-weight: bold; }
 
         .bb-footer {
-            border-top: 1px solid #555; padding-top: 20px;
+            border-top: 1px solid #555; padding-top: 15px;
         }
-        .open-call { font-size: 2rem; font-weight: bold; color: #fff; margin-bottom: 15px; font-family: 'Reggae One'; }
+        .open-call { font-size: 1.8rem; font-weight: bold; color: #fff; margin-bottom: 10px; font-family: 'Reggae One'; }
         .bb-points {
-            display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
         }
         .bb-point-item {
-            background: #2c3e50; padding: 10px 20px; border-radius: 50px; font-weight: bold; font-size: 1.2rem;
+            background: #2c3e50; padding: 8px 15px; border-radius: 50px; font-weight: bold; font-size: 1rem;
             border: 1px solid var(--accent-color);
         }
 
-        /* メディア・問題 */
+        /* メディア・問題 (コンパクト化) */
+        .quiz-meta {
+            margin-bottom: 10px; /* 削減 */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
         .media-box {
-            width: 100%; height: 350px; background: #000;
+            width: 100%; 
+            height: 25vh; /* 画面高さの25%に設定 */
+            min-height: 200px;
+            max-height: 350px;
+            background: #000;
             display: flex; justify-content: center; align-items: center;
-            border: 1px solid #333; border-radius: 10px; margin-bottom: 20px;
+            border: 1px solid #333; border-radius: 10px; margin-bottom: 15px;
         }
         .media-box img, .media-box video { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        .question-text { font-size: 1.8rem; margin-bottom: 30px; font-weight: bold; line-height: 1.4; }
+        .question-text { 
+            font-size: 1.5rem; /* 少し小さく */
+            margin-bottom: 20px; /* 削減 */
+            font-weight: bold; 
+            line-height: 1.3; 
+        }
         
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .option-card {
-            background: #333; padding: 20px; border-radius: 10px;
-            font-size: 1.5rem; border: 2px solid #555; position: relative;
+            background: #333; padding: 15px; /* 削減 */
+            border-radius: 10px;
+            font-size: 1.3rem; /* 少し小さく */
+            border: 2px solid #555; position: relative;
         }
         .option-card.correct {
             background: var(--correct-color); border-color: #ff0000; animation: pulse 1s infinite;
@@ -157,36 +186,36 @@
         
         /* 参加者ステータスパネル (Host右側) */
         .status-panel {
-            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;
-            border: 1px solid #444; max-height: 600px; overflow-y: auto;
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
+            border: 1px solid #444; max-height: 50vh; overflow-y: auto;
         }
         .status-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px; border-bottom: 1px solid #444;
+            padding: 8px; border-bottom: 1px solid #444;
         }
-        .status-name { font-weight: bold; font-size: 1.2rem; }
+        .status-name { font-weight: bold; font-size: 1.1rem; }
         .status-info { display: flex; align-items: center; gap: 10px; }
         .status-mark { 
-            font-size: 1.5rem; width: 30px; text-align: center; font-weight: bold; font-family: 'Reggae One';
+            font-size: 1.3rem; width: 30px; text-align: center; font-weight: bold; font-family: 'Reggae One';
         }
-        .status-result { font-size: 1.5rem; }
+        .status-result { font-size: 1.3rem; }
         .status-answered { color: var(--quiz-color); } /* 回答済み */
         
         /* コントロールバー */
         .control-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(0,0,0,0.9); border-top: 2px solid var(--accent-color);
-            padding: 15px; display: flex; gap: 20px; justify-content: center; z-index: 1000;
+            padding: 10px; display: flex; gap: 20px; justify-content: center; z-index: 1000;
         }
         .ctrl-btn {
-            padding: 10px 30px; font-size: 1.2rem; border-radius: 30px; border: none;
-            cursor: pointer; font-family: 'Reggae One', serif; min-width: 150px;
+            padding: 8px 25px; font-size: 1.1rem; border-radius: 30px; border: none;
+            cursor: pointer; font-family: 'Reggae One', serif; min-width: 120px;
         }
-        .btn-prev { background: #555; color: #fff; min-width: 100px; } /* 戻るボタン */
+        .btn-prev { background: #555; color: #fff; min-width: 80px; } /* 戻るボタン */
         .btn-next { background: var(--accent-color); color: #000; }
         .btn-show { background: var(--quiz-color); color: #fff; }
-        .btn-start { background: #e74c3c; color: #fff; font-size: 1.5rem; padding: 15px 50px; }
-        .btn-reset { background: #555; color: #fff; font-size: 1rem; position:absolute; right: 20px; top: 20px; padding: 10px; }
+        .btn-start { background: #e74c3c; color: #fff; font-size: 1.3rem; padding: 10px 40px; }
+        .btn-reset { background: #555; color: #fff; font-size: 0.9rem; position:absolute; right: 15px; top: 15px; padding: 5px 10px; }
 
         /* --- Client画面レイアウト --- */
         .client-container {
@@ -240,15 +269,17 @@
         .win { color: var(--correct-color); }
         .lose { color: #555; }
 
-        /* スコアボード (Host下部) - ドラッグ対応版 */
+        /* スコアボード (Host下部) - ドラッグ対応版 (コンパクト化) */
         .host-scoreboard {
-            position: fixed; bottom: 80px; left: 0; width: 100%;
+            position: fixed; bottom: 65px; /* コントロールバーの高さに合わせて調整 */
+            left: 0; width: 100%;
             background: rgba(30,30,30,0.95); z-index: 900;
-            height: 200px; display: flex; flex-direction: column;
+            height: 150px; /* デフォルト高さを低く */
+            display: flex; flex-direction: column;
             border-top: 1px solid #444;
         }
         .resize-handle {
-            height: 20px; background: #333; cursor: row-resize;
+            height: 15px; background: #333; cursor: row-resize;
             display: flex; justify-content: center; align-items: center;
         }
         .resize-bar { width: 50px; height: 4px; background: #666; border-radius: 2px; }
@@ -258,13 +289,13 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
         }
         .p-card {
-            background: #2c3e50; padding: 10px; border-radius: 8px; text-align: center;
+            background: #2c3e50; padding: 5px; border-radius: 8px; text-align: center;
             border: 1px solid #444;
         }
-        .p-score { font-size: 2rem; color: var(--accent-color); font-weight: bold; }
-        .p-name { font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .score-ctrls { display: flex; justify-content: center; gap: 5px; margin-top: 5px; }
-        .mini-btn { padding: 5px 10px; font-size: 0.8rem; background: #444; border:none; color: #fff; border-radius: 4px; cursor: pointer; }
+        .p-score { font-size: 1.5rem; color: var(--accent-color); font-weight: bold; }
+        .p-name { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .score-ctrls { display: flex; justify-content: center; gap: 3px; margin-top: 3px; }
+        .mini-btn { padding: 3px 8px; font-size: 0.7rem; background: #444; border:none; color: #fff; border-radius: 4px; cursor: pointer; }
 
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(231,76,60,0.7); } 70% { box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
     </style>
