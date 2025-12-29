@@ -216,6 +216,7 @@
         .btn-show { background: var(--quiz-color); color: #fff; }
         .btn-start { background: #e74c3c; color: #fff; font-size: 1.3rem; padding: 10px 40px; }
         .btn-reset { background: #555; color: #fff; font-size: 0.9rem; position:absolute; right: 15px; top: 15px; padding: 5px 10px; }
+        .btn-bot { background: #2980b9; color: #fff; font-size: 0.9rem; position:absolute; left: 15px; top: 15px; padding: 5px 10px; }
 
         /* --- Client画面レイアウト --- */
         .client-container {
@@ -619,6 +620,44 @@
         }
     };
 
+    // --- TEST BOT LOGIC ---
+    window.startBotTest = async () => {
+        if(!confirm("仮想ボットを10体参加させますか？\n（本番データと混ざるため、リハーサル時のみ使用してください）")) return;
+        
+        const botNames = ["Bot-田中", "Bot-佐藤", "Bot-鈴木", "Bot-高橋", "Bot-伊藤", "Bot-渡辺", "Bot-山本", "Bot-中村", "Bot-小林", "Bot-加藤"];
+        
+        // 1. Create Bots
+        for(let name of botNames) {
+            await addDoc(collection(db, "bonenkai_2025_players"), {
+                name: name,
+                score: 0,
+                currentAnswer: null,
+                isBot: true // Flag
+            });
+        }
+
+        // 2. Start Bot Listener (Running in Host Browser)
+        onSnapshot(doc(db, "bonenkai_2025", "gameState"), async (docSnap) => {
+            const state = docSnap.data();
+            if(state.phase === 'quiz' && state.status === 'open') {
+                // Random delay answer
+                setTimeout(async () => {
+                    const playersSnap = await getDocs(collection(db, "bonenkai_2025_players"));
+                    playersSnap.forEach(async p => {
+                        if(p.data().isBot && p.data().currentAnswer === null) {
+                            const randomAns = Math.floor(Math.random() * 4);
+                            await updateDoc(doc(db, "bonenkai_2025_players", p.id), {
+                                currentAnswer: randomAns
+                            });
+                        }
+                    });
+                }, Math.random() * 3000 + 1000); // 1-4 sec delay
+            }
+        });
+        
+        alert("ボット10名が参加しました！クイズを開始すると自動で回答します。");
+    };
+
     // Host UI Renderers
     function updateHostUI(state) {
         if (!state) return;
@@ -976,6 +1015,7 @@
 
         <!-- Controls (Fixed Bottom Overlay) -->
         <div class="control-bar" id="ctrl-bar">
+            <button class="ctrl-btn btn-bot" onclick="startBotTest()">🤖 TEST:10名参加</button>
             <button id="btn-prev" class="ctrl-btn btn-prev hidden" onclick="hostPrevQ()">← 前へ</button>
             <button id="btn-show" class="ctrl-btn btn-show hidden" onclick="hostShowAnswer()">正解を表示</button>
             <button id="btn-next" class="ctrl-btn btn-next hidden" onclick="hostNextQ()">次の問題へ</button>
