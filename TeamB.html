@@ -206,6 +206,8 @@
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(0,0,0,0.9); border-top: 2px solid var(--accent-color);
             padding: 10px; display: flex; gap: 20px; justify-content: center; z-index: 1000;
+            min-height: 60px; /* ★追加: 中身が空でも高さを確保 */
+            box-sizing: border-box; /* paddingを含める */
         }
         .ctrl-btn {
             padding: 8px 25px; font-size: 1.1rem; border-radius: 30px; border: none;
@@ -215,10 +217,17 @@
         .btn-next { background: var(--accent-color); color: #000; }
         .btn-show { background: var(--quiz-color); color: #fff; }
         .btn-start { background: #e74c3c; color: #fff; font-size: 1.3rem; padding: 10px 40px; }
-        .btn-reset { background: #555; color: #fff; font-size: 0.9rem; position:absolute; right: 15px; top: 15px; padding: 5px 10px; }
+        .btn-reset { 
+            background: #555; color: #fff; font-size: 0.9rem; 
+            position:absolute; right: 15px; 
+            top: 50%; transform: translateY(-50%); /* ★修正: 垂直中央揃え */
+            padding: 5px 10px; 
+        }
         .btn-bot { 
             background: #2980b9; color: #fff; font-size: 0.9rem; 
-            position:absolute; left: 15px; top: 15px; padding: 5px 10px;
+            position:absolute; left: 15px; 
+            top: 50%; transform: translateY(-50%); /* ★修正: 垂直中央揃え */
+            padding: 5px 10px;
             min-width: auto; /* サイズをリセット */
             z-index: 2000; /* 最前面に */
         }
