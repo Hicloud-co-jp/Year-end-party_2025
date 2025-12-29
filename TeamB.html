@@ -352,85 +352,96 @@
     
     // --- Quiz Data ---
     const quizData = [
+        // 1. 西川 (Q1, Q2)
         {
-            presenter: "赤岡先生からの出題",
-            question: "第1問：今年、赤岡先生がこっそり始めた趣味はどれでしょう？",
-            options: ["A. ソロキャンプ", "B. バイオリン", "C. ポケモンカード", "D. 筋トレ"],
-            answerIndex: 0, 
+            presenter: "西川からの出題",
+            question: "サービス問題！一問目なので肩慣らしです！青森旅行で行った高山稲荷神社ですが鳥居の数はいくつでしょうか！？",
+            options: ["A. 1000本", "B. 約100本", "C. 約200本", "D. 約400本"],
+            answerIndex: 2, // C
             mediaType: "image", 
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q1+Image"
+            mediaSrc: "./aomori.jpg", // 同じフォルダに画像を置いてください
+            answerMediaSrc: "./image_7800a5.jpg" // 集合写真（仮）
+        },
+        {
+            presenter: "西川からの出題",
+            question: "私はVTuberが好きです。ウメハラがCrazyRaccoonとコラボしてCRカップでSF6をやり始めた時から興味が出て、最近ではMad Town GTAが大好物でイベントにも足を運んでいます。\nさて！私の推しは誰でしょう！？",
+            options: ["A. 橘ひなの", "B. 天鬼ぷるる", "C. 赤見かるび", "D. メーメントヴァニタス"],
+            answerIndex: 1, // B
+            mediaType: "image",
+            mediaSrc: "./vtuber.jpg",
+            answerMediaSrc: "./pururu_sf6.jpg"
+        },
+
+        // 2. あべちゃん (Q3, Q4) - 仮データ
+        {
+            presenter: "あべちゃんからの出題",
+            question: "（準備中）あべちゃんの第1問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none", // 画像なしの場合はnone
+            mediaSrc: ""
+        },
+        {
+            presenter: "あべちゃんからの出題",
+            question: "（準備中）あべちゃんの第2問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
+        },
+
+        // 3. 赤岡先生 (Q5, Q6) - 仮データ
+        {
+            presenter: "赤岡先生からの出題",
+            question: "（準備中）赤岡先生の第1問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
         },
         {
             presenter: "赤岡先生からの出題",
-            question: "第2問：赤岡先生が今年一番高かった買い物は？",
-            options: ["A. ドラム式洗濯機", "B. 高級腕時計", "C. 車の修理代", "D. 仮想通貨"],
-            answerIndex: 2,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q2+Image"
+            question: "（準備中）赤岡先生の第2問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
+        },
+
+        // 4. ゆうぞうさん (Q7, Q8) - 仮データ
+        {
+            presenter: "ゆうぞうさんからの出題",
+            question: "（準備中）ゆうぞうさんの第1問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
+        },
+        {
+            presenter: "ゆうぞうさんからの出題",
+            question: "（準備中）ゆうぞうさんの第2問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
+        },
+
+        // 5. もっつ (Q9, Q10) - 仮データ
+        {
+            presenter: "もっつからの出題",
+            question: "（準備中）もっつの第1問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
+            answerIndex: 0,
+            mediaType: "none",
+            mediaSrc: ""
         },
         {
             presenter: "もっつからの出題",
-            question: "第3問：もっつが最近ハマっているコンビニスイーツは？",
-            options: ["A. ファミマのフラッペ", "B. ローソンのバスチー", "C. セブンのカヌレ", "D. ミニストップのソフト"],
-            answerIndex: 1,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q3+Image"
-        },
-        {
-            presenter: "もっつからの出題",
-            question: "第4問：もっつが今年行った旅行先で一番良かった場所は？",
-            options: ["A. 北海道", "B. 沖縄", "C. 台湾", "D. 近所のスーパー銭湯"],
+            question: "（準備中）もっつの第2問目がここに入ります。",
+            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
             answerIndex: 0,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q4+Image"
-        },
-        {
-            presenter: "西川からの出題",
-            question: "第5問：西川が最近やらかした最大の失敗は？",
-            options: ["A. 財布を落とした", "B. 会議で寝た", "C. 終電を逃して歩いて帰宅", "D. 料理でボヤ騒ぎ"],
-            answerIndex: 2,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q5+Image"
-        },
-        {
-            presenter: "西川からの出題",
-            question: "第6問：西川が来年挑戦したいことは？",
-            options: ["A. フルマラソン", "B. 英語学習", "C. 婚活", "D. YouTuberデビュー"],
-            answerIndex: 0,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q6+Image"
-        },
-        {
-            presenter: "祐三さんからの出題",
-            question: "第7問：祐三さんが今年一番食べたラーメンの回数は？",
-            options: ["A. 50回", "B. 100回", "C. 150回", "D. 365回"],
-            answerIndex: 1,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q7+Image"
-        },
-        {
-            presenter: "祐三さんからの出題",
-            question: "第8問：祐三さんの今のスマホの待ち受け画面は？",
-            options: ["A. 飼い猫", "B. 愛車", "C. 初期設定のまま", "D. 好きなアイドル"],
-            answerIndex: 3,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q8+Image"
-        },
-        {
-            presenter: "あべちゃんからの出題",
-            question: "第9問：あべちゃんが今年一番感動した映画は？",
-            options: ["A. ゴジラ-1.0", "B. 君たちはどう生きるか", "C. トップガン(家で見た)", "D. アンパンマン"],
-            answerIndex: 0,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q9+Image"
-        },
-        {
-            presenter: "あべちゃんからの出題",
-            question: "第10問：あべちゃんからのメッセージ。「みんなに一言！」",
-            options: ["A. お金貸して", "B. 愛してるぜ", "C. 健康第一", "D. 飲みに行こう"],
-            answerIndex: 2,
-            mediaType: "image",
-            mediaSrc: "https://placehold.co/600x400/1e1e1e/d4af37?text=Q10+Image"
+            mediaType: "none",
+            mediaSrc: ""
         }
     ];
     
