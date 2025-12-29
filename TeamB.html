@@ -360,7 +360,7 @@
             answerIndex: 2, // C
             mediaType: "image", 
             mediaSrc: "./aomori.jpg", // 同じフォルダに画像を置いてください
-            answerMediaSrc: "./image_7800a5.jpg" // 集合写真（仮）
+            answerMediaSrc: "./aomori_syuugou.jpg" // 修正完了
         },
         {
             presenter: "西川からの出題",
@@ -369,7 +369,7 @@
             answerIndex: 1, // B
             mediaType: "image",
             mediaSrc: "./vtuber.jpg",
-            answerMediaSrc: "./pururu_sf6.jpg"
+            answerMediaSrc: "./pururu_sf6.jpg" // 確認（変更なし）
         },
 
         // 2. あべちゃん (Q3, Q4) - 仮データ
@@ -727,10 +727,18 @@
             el.classList.remove('correct', 'fade');
         }
 
+        // ★ 画像切り替えロジック
         const imgEl = document.getElementById('q-image');
         const phEl = document.getElementById('q-placeholder');
+        
+        let displayImgSrc = data.mediaSrc;
+        // 正解表示中(closed) かつ 正解画像(answerMediaSrc)がある場合
+        if (state.status === 'closed' && data.answerMediaSrc) {
+            displayImgSrc = data.answerMediaSrc;
+        }
+
         if (data.mediaType === 'image') {
-            imgEl.src = data.mediaSrc;
+            imgEl.src = displayImgSrc;
             imgEl.classList.remove('hidden');
             phEl.classList.add('hidden');
         } else {
