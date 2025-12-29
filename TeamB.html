@@ -372,22 +372,24 @@
             answerMediaSrc: "./pururu_sf6.jpg" // 確認（変更なし）
         },
 
-        // 2. あべちゃん (Q3, Q4) - 仮データ
+        // 2. あべちゃん (Q3, Q4)
         {
             presenter: "あべちゃんからの出題",
-            question: "（準備中）あべちゃんの第1問目がここに入ります。",
-            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
-            answerIndex: 0,
-            mediaType: "none", // 画像なしの場合はnone
-            mediaSrc: ""
+            question: "あべさんはカラオケ好きで有名ですが今年は全然行けませんでした何回行ったでしょうか？",
+            options: ["A. 0回", "B. 5回", "C. 10回", "D. 15回"],
+            answerIndex: 0, // A
+            mediaType: "image",
+            mediaSrc: "./Q3_1.jpg",
+            answerMediaSrc: "./Q3_2.jpg"
         },
         {
             presenter: "あべちゃんからの出題",
-            question: "（準備中）あべちゃんの第2問目がここに入ります。",
-            options: ["A. 選択肢A", "B. 選択肢B", "C. 選択肢C", "D. 選択肢D"],
-            answerIndex: 0,
-            mediaType: "none",
-            mediaSrc: ""
+            question: "あべさんはパチンカスです。今1番面白いと思っている台は？",
+            options: ["A. 秘宝伝", "B. L化物語", "C. L防振り", "D. Lスターハナハナ"],
+            answerIndex: 2, // C
+            mediaType: "image",
+            mediaSrc: "./Q4_1.jpg",
+            answerMediaSrc: "./Q4_2.jpg"
         },
 
         // 3. 赤岡先生 (Q5, Q6) - 仮データ
@@ -475,7 +477,8 @@
     // --- Setup View Logic ---
     window.startAsHost = () => {
         const pass = prompt("Enter Host Password:");
-        if(pass === "musyokutensei12manmaketa") {
+        // パスワード変更
+        if(pass === "teamb") {
             const newUrl = window.location.href.split('?')[0] + '?role=host';
             window.location.href = newUrl;
         } else {
